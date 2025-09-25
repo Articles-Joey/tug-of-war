@@ -18,10 +18,13 @@ import { useControllerStore } from '@/hooks/useControllerStore';
 // import { useGameStore } from '@/components/Games/Ocean Rings/hooks/useGameStore';
 // import { Dropdown, DropdownButton } from 'react-bootstrap';
 // import TouchControls from 'app/(site)/community/games/glass-ceiling/components/UI/TouchControls';
-import { useLocalStorageNew } from '@/hooks/useLocalStorageNew';
+// import { useLocalStorageNew } from '@/hooks/useLocalStorageNew';
 import LeftPanelContent from '@/components/UI/LeftPanel';
 import { useSocketStore } from '@/hooks/useSocketStore';
 import { useKeyboard } from '@/hooks/useKeyboard';
+import PowerMeter from '@/components/Game/PowerMeter';
+import { useGameStore } from '@/hooks/useGameStore';
+import { useHotkeys } from 'react-hotkeys-hook';
 
 const GameCanvas = dynamic(() => import('@/components/Game/GameCanvas'), {
     ssr: false,
@@ -34,6 +37,8 @@ export default function IceSlideGamePage() {
     } = useSocketStore(state => ({
         socket: state.socket
     }));
+
+    const sidebar = useGameStore(state => state.sidebar)
 
     const router = useRouter()
     const pathname = usePathname()
@@ -71,6 +76,10 @@ export default function IceSlideGamePage() {
 
     const [sceneKey, setSceneKey] = useState(0);
 
+    useHotkeys('r', () => {
+        setSceneKey(prev => prev + 1)
+    });
+
     const [gameState, setGameState] = useState(false)
 
     // Function to handle scene reload
@@ -96,15 +105,19 @@ export default function IceSlideGamePage() {
     const game_name = 'Tug of War'
     const game_key = 'tug-of-war'
 
+    useEffect(() => {
+        setShowMenu(false)
+    }, [sidebar])
+
     return (
         <div
-            className={`tug-of-war-game-page ${isFullscreen && 'fullscreen'}`}
+            className={`tug-of-war-game-page ${isFullscreen && 'fullscreen'} ${sidebar ? 'sidebar-show' : 'sidebar-hide'}`}
             id="tug-of-war-game-page"
         >
 
             <div className="menu-bar card card-articles p-1 justify-content-center">
 
-                <div className='flex-header align-items-center'>
+                <div className='flex-header align-items-center h-100'>
 
                     <ArticlesButton
                         small
@@ -159,7 +172,18 @@ export default function IceSlideGamePage() {
                 touchControlsEnabled={touchControlsEnabled}
             /> */}
 
-            <div className='panel-left card rounded-0 d-none d-lg-flex'>
+            <div
+                className={`menu-icon ${sidebar ? 'sidebar-show' : ''}`}
+                onClick={() => {
+                    setShowMenu(prev => !prev)
+                }}
+            >
+
+            </div>
+
+            <div
+                className={`panel-left rounded-0 d-none d-lg-flex ${sidebar ? 'sidebar-show' : 'sidebar-hide'}`}
+            >
 
                 <LeftPanelContent
                     {...panelProps}
@@ -195,120 +219,3 @@ export default function IceSlideGamePage() {
     );
 }
 
-function PowerMeter() {
-
-    const { moveRight, moveLeft } = useKeyboard()
-
-    const [
-        history,
-        setHistory
-    ] = useState([]);
-
-    const [averageInterval, setAverageInterval] = useState(0);
-
-    useEffect(() => {
-        // console.log("Test")
-        if (moveRight || moveLeft) {
-
-            // Build a history of moves
-            // Calculate meter percent
-
-            setHistory([
-                ...history,
-                {
-                    ...(moveRight && { move: 'Right' }),
-                    ...(moveLeft && { move: 'Left' }),
-                    date: new Date()
-                }
-            ])
-
-        }
-    }, [moveRight, moveLeft])
-
-    useEffect(() => {
-        const interval = setInterval(() => {
-            const now = new Date();
-            setHistory((prevHistory) =>
-                prevHistory.filter((entry) => now - new Date(entry.date) <= 5000)
-            );
-        }, 1000); // Run cleanup every second
-
-        return () => clearInterval(interval); // Cleanup on component unmount
-    }, []);
-
-    useEffect(() => {
-        if (history.length > 1) {
-            // Calculate time differences between consecutive entries
-            const intervals = history
-                .map((entry, index) => {
-                    if (index === 0) return null; // Skip the first item
-                    const prev = new Date(history[index - 1].date).getTime();
-                    const curr = new Date(entry.date).getTime();
-                    return curr - prev;
-                })
-                .filter((diff) => diff !== null); // Remove null values
-
-            // Calculate average interval
-            const total = intervals.reduce((sum, diff) => sum + diff, 0);
-            const average = total / intervals.length;
-
-            setAverageInterval(average); // Store average in state
-        } else {
-            setAverageInterval(0); // Reset if not enough data
-        }
-    }, [history]);
-
-    let calculatedHeight = useMemo(() => {
-
-        if ( averageInterval > 0 && averageInterval < 100 ) {
-            return '100%'
-        } else if (averageInterval > 100 && averageInterval < 200) {
-            return '80%'
-        } else if (averageInterval > 150 && averageInterval < 200) {
-            return '60%'
-        } else if (averageInterval > 200 && averageInterval < 250) {
-            return '40%'
-        } else if (averageInterval > 250 && averageInterval < 300) {
-            return '20%'
-        }else if (averageInterval == 0) {
-            return '0%'
-        }
-
-    }, [averageInterval])
-
-    return (
-        <div className="power-meter noselect">
-            <div className="card card-articles card-sm h-100">
-
-                <div className="card-header d-flex justify-content-center small">
-                    Power Meter - {history.length} - {averageInterval}
-                </div>
-
-                <div className="card-body h-100 flex-grow-1 p-0 d-flex justify-content-center align-items-center">
-
-                    <div className="meter">
-
-                        <div
-                            className="current-bar"
-                            style={{
-                                height: calculatedHeight
-                            }}
-                        >
-
-                        </div>
-
-                        <div className="target-bar"></div>
-
-                    </div>
-
-                </div>
-
-                <div className="card-footer d-flex justify-content-center">
-                    <i className={`${moveLeft ? 'fad' : 'fas'} fa-2x px-1 fa-arrow-circle-left me-0`}></i>
-                    <i className={`${moveRight ? 'fad' : 'fas'} fa-2x px-1 fa-arrow-circle-right me-0`}></i>
-                </div>
-
-            </div>
-        </div>
-    )
-}

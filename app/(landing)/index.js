@@ -45,6 +45,9 @@ const game_name = 'Tug of War'
 
 export default function GameLobbyPage() {
 
+    const theme = useGameStore(state => state.theme)
+    const toggleTheme = useGameStore(state => state.toggleTheme)
+
     const {
         socket,
     } = useSocketStore(state => ({
@@ -160,34 +163,51 @@ export default function GameLobbyPage() {
 
                     <div className='card-header d-flex align-items-center'>
 
-                        <div className="flex-grow-1">
+                        <div className='d-flex align-items-center'>
 
-                            <div className="form-group articles mb-0">
-                                <label htmlFor="nickname">Nickname</label>
-                                {/* <SingleInput
-                                    value={nickname}
-                                    setValue={setNickname}
-                                    noMargin
-                                /> */}
-                                <input
-                                    type="text"
-                                    className="form-control"
-                                    id="nickname"
-                                    value={nickname}
-                                    onChange={(e) => setNickname(e.target.value)}
-                                    placeholder="Enter your nickname"
-                                />
+                            <img
+                                className='panel-bg me-2'
+                                src="img/icon.png"
+                                width={70}
+                                height={70}
+                            >
+
+                            </img>
+
+                            <div className="flex-grow-1">
+
+                                <div className="form-group articles mb-0">
+                                    <label htmlFor="nickname">Nickname</label>
+                                    {/* <SingleInput
+                                        value={nickname}
+                                        setValue={setNickname}
+                                        noMargin
+                                    /> */}
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        id="nickname"
+                                        value={nickname}
+                                        onChange={(e) => setNickname(e.target.value)}
+                                        placeholder="Enter your nickname"
+                                    />
+                                </div>
+
+                                <div className='mt-1' style={{ fontSize: '0.8rem' }}>Visible to all players</div>
+
                             </div>
 
-                            <div className='mt-1' style={{ fontSize: '0.8rem' }}>Visible to all players</div>
-
                         </div>
+
                     </div>
 
                     <div className="card-body">
 
                         <Link href={{
-                            pathname: `/play`
+                            pathname: `/play`,
+                            query: {
+                                server: "single-player"
+                            }
                         }}>
                             <ArticlesButton
                                 className={`w-100 mb-3`}
@@ -326,6 +346,16 @@ export default function GameLobbyPage() {
                             Credits
                         </ArticlesButton>
 
+                        <ArticlesButton
+                            small
+                            className="w-50"
+                            onClick={() => {
+                                toggleTheme()
+                            }}
+                        >
+                            Theme: {theme}
+                        </ArticlesButton>
+
                     </div>
 
                 </div>
@@ -335,6 +365,7 @@ export default function GameLobbyPage() {
                 {/* <Ad section={"Games"} section_id={game_name} /> */}
 
             </div>
+
         </div>
     );
 }

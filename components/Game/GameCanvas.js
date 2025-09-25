@@ -17,6 +17,12 @@ import { ModelQuaterniusFishingShark } from "@/components/Models/Shark";
 import Tree from "@/components/Models/Tree";
 
 import { ModelKennyNLPirateShipWreck } from "@/components/Models/ship_wreck";
+import { useGameStore } from "@/hooks/useGameStore";
+import CogFlunky from "../Models/Flunky";
+import ModelToon from "../Models/Toon";
+import Pier from "../Models/Pier";
+import Crate from "../Models/Crate";
+import Fence from "../Models/Fence";
 
 const texture = new TextureLoader().load(`${process.env.NEXT_PUBLIC_CDN}games/Race Game/grass.jpg`)
 
@@ -41,6 +47,8 @@ const GrassPlane = ({ position }) => {
 };
 
 function GameCanvas(props) {
+
+    const theme = useGameStore(state => state.theme);
 
     // const GPUTier = useDetectGPU()
 
@@ -77,14 +85,37 @@ function GameCanvas(props) {
 
             <Sky
                 // distance={450000}
-                sunPosition={[0, 10, 0]}
+                sunPosition={[
+                    0,
+                    theme == "Light" ? 10 : -10,
+                    0
+                ]}
             // inclination={0}
             // azimuth={0.25}
             // {...props} 
             />
 
-            <ambientLight intensity={2} />
-            <spotLight intensity={30000} position={[-50, 100, 50]} angle={5} penumbra={1} />
+            {theme == "Light" ?
+                <>
+                    <ambientLight intensity={2} />
+                    <spotLight
+                        intensity={30000}
+                        position={[-50, 90, 0]}
+                        angle={5}
+                        penumbra={1}
+                    />
+                </>
+                :
+                <>
+                    <spotLight
+                        intensity={5000}
+                        position={[-50, 90, 0]}
+                        angle={5}
+                        penumbra={1}
+                        color={"white"}
+                    />
+                </>
+            }
 
             {/* <pointLight position={[-10, -10, -10]} /> */}
 
@@ -100,17 +131,17 @@ function GameCanvas(props) {
 
             <Tree
                 scale={1}
-                position={[0, 0.25, -30]}
+                position={[0, 0.25, -35]}
             />
 
             <Tree
                 scale={1}
-                position={[-20, 0.25, -30]}
+                position={[-20, 0.25, -35]}
             />
 
             <Tree
                 scale={1}
-                position={[20, 0.25, -30]}
+                position={[20, 0.25, -35]}
             />
 
             <ModelQuaterniusFishingShark
@@ -166,6 +197,7 @@ function GameCanvas(props) {
             <group>
                 <Pier
                     position={[-10, 2, 0]}
+                    flipTexture={true}
                 />
 
                 <Pier
@@ -187,6 +219,7 @@ function GameCanvas(props) {
             <group>
                 <Pier
                     position={[10, 2, 0]}
+                    flipTexture={true}
                 />
 
                 <Pier
@@ -205,6 +238,21 @@ function GameCanvas(props) {
                 />
             </group>
 
+            <Fence
+                position={[0, 2.25, -30]}
+                args={[80, 4]}
+            />
+
+            <Crate
+                position={[0, 1, 10]}
+                rotation={[degToRad(15), degToRad(45), 0]}
+            />
+
+            <Crate
+                position={[3, 1, 18]}
+                rotation={[degToRad(15), degToRad(45), 0]}
+            />
+
             {/* <Walls /> */}
 
         </Canvas>
@@ -214,6 +262,8 @@ function GameCanvas(props) {
 export default memo(GameCanvas)
 
 function People({ position, rotation }) {
+
+    const toontownMode = useGameStore(state => state.toontownMode)
 
     const peopleRef = useRef();
     const [direction, setDirection] = useState(1); // 1 for forward, -1 for backward
@@ -236,21 +286,45 @@ function People({ position, rotation }) {
 
     return (
         <group ref={peopleRef}>
-            <ModelSoldierWoman
-                scale={3}
-                rotation={[0, degToRad(90), 0]}
-                position={[-10, 2.25, 0]}
-            />
 
-            <ModelKingMen
+            {toontownMode ?
+                <ModelToon
+                    scale={1.5}
+                    rotation={[0, degToRad(90), 0]}
+                    position={[-10, 2.25, 0]}
+                />
+                :
+                <ModelSoldierWoman
+                    scale={3}
+                    rotation={[0, degToRad(90), 0]}
+                    position={[-10, 2.25, 0]}
+                />
+            }
+
+            {toontownMode ?
+                <CogFlunky
+                    scale={0.01}
+                    rotation={[0, degToRad(-90), 0]}
+                    position={[10, 2.25, 0]}
+                />
+                :
+                <ModelKingMen
+                    scale={3}
+                    rotation={[0, degToRad(-90), 0]}
+                    position={[10, 2.25, 0]}
+                />
+            }
+
+            {/* <ModelKingMen
                 scale={3}
                 rotation={[0, degToRad(-90), 0]}
                 position={[10, 2.25, 0]}
-            />
+            /> */}
 
             <Rope
                 position={[0, 5, -0.6]}
             />
+
         </group>
     )
 }
@@ -266,71 +340,6 @@ const FlatRing = ({ args, color }) => {
         </mesh>
     );
 };
-
-function Pier({ position, rotation }) {
-
-    // const [ref, api] = useBox(() => ({
-    //     mass: 0,
-    //     type: 'Static',
-    //     args: [100, 0.5, 100],
-    //     position: [0, 0, 0],
-    // }))
-
-    return (
-        <group
-            position={position}
-            rotation={rotation}
-        >
-
-            <mesh castShadow>
-                <boxGeometry args={[10, 0.5, 5]} />
-                <meshStandardMaterial color="saddlebrown" />
-            </mesh>
-
-            <mesh
-                castShadow
-                position={[5, -2, 2.5]}
-            >
-                <cylinderGeometry
-                    args={[0.25, 0.25, 5]}
-                />
-                <meshStandardMaterial color="black" />
-            </mesh>
-
-            <mesh
-                castShadow
-                position={[5, -2, -2.5]}
-            >
-                <cylinderGeometry
-                    args={[0.25, 0.25, 5]}
-                />
-                <meshStandardMaterial color="black" />
-            </mesh>
-
-            <mesh
-                castShadow
-                position={[-5, -2, 2.5]}
-            >
-                <cylinderGeometry
-                    args={[0.25, 0.25, 5]}
-                />
-                <meshStandardMaterial color="black" />
-            </mesh>
-
-            <mesh
-                castShadow
-                position={[-5, -2, -2.5]}
-            >
-                <cylinderGeometry
-                    args={[0.25, 0.25, 5]}
-                />
-                <meshStandardMaterial color="black" />
-            </mesh>
-
-        </group>
-    )
-
-}
 
 function Rope({ position }) {
 
@@ -360,6 +369,8 @@ function Rope({ position }) {
     )
 
 }
+
+
 
 function Rocks() {
 

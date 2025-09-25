@@ -5,9 +5,22 @@
 @use "./pages/game" as *;
 
 button {
-    font-size: 0.75rem!important;
+    font-size: 0.75rem !important;
 }
 
 i {
     margin-right: 0.2rem;
+}
+
+
+.card {
+    background-color: #faffc7;
+    border: 3px solid rgba(9, 145, 0, 100%);
+}
+
+[data-bs-theme="dark"] {
+    .card {
+        background-color: #535542;
+        border: 3px solid rgb(4, 54, 0);
+    }
 }

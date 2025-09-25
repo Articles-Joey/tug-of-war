@@ -1,8 +1,8 @@
 # Tug of War
 
+![Game Preview](/public/img/game-preview.gif)
 
-
-Tap your keys at the proper rate in order to pull and defeat your opponent.
+The objective is to pull the opposing side into the water by repeatedly pressing control keys at a varying speed in accordance with the power meter.
 
 ## Getting Started
 
@@ -15,3 +15,14 @@ npm run dev
 ## Multiplayer
 
 Working on multiplayer via Peer to Peer WebRTC
+
+## Inspiration
+
+This game was inspired by a mini game inside the game Toontown Online.
+
+[Game info](https://toontownrewritten.fandom.com/wiki/Tug_of_War)
+
+## Attributions
+
+[Music - Cyberwave Orchestra](https://pixabay.com/users/cyberwave-orchestra-23801316)  
+[Toontown Music]()
