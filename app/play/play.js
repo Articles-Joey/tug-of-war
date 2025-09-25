@@ -19,7 +19,7 @@ import { useControllerStore } from '@/hooks/useControllerStore';
 // import { Dropdown, DropdownButton } from 'react-bootstrap';
 // import TouchControls from 'app/(site)/community/games/glass-ceiling/components/UI/TouchControls';
 import { useLocalStorageNew } from '@/hooks/useLocalStorageNew';
-import LeftPanelContent from '@/components/Game/LeftPanel';
+import LeftPanelContent from '@/components/UI/LeftPanel';
 import { useSocketStore } from '@/hooks/useSocketStore';
 import { useKeyboard } from '@/hooks/useKeyboard';
 
@@ -41,8 +41,8 @@ export default function IceSlideGamePage() {
     const params = Object.fromEntries(searchParams.entries());
     const { server } = params
 
-    const { controllerState, setControllerState } = useControllerStore()
-    const [showControllerState, setShowControllerState] = useState(false)
+    // const { controllerState, setControllerState } = useControllerStore()
+    // const [showControllerState, setShowControllerState] = useState(false)
 
     // const [ cameraMode, setCameraMode ] = useState('Player')
 
@@ -67,7 +67,7 @@ export default function IceSlideGamePage() {
 
     const [showMenu, setShowMenu] = useState(false)
 
-    const [touchControlsEnabled, setTouchControlsEnabled] = useLocalStorageNew("game:touchControlsEnabled", false)
+    // const [touchControlsEnabled, setTouchControlsEnabled] = useLocalStorageNew("game:touchControlsEnabled", false)
 
     const [sceneKey, setSceneKey] = useState(0);
 
@@ -83,8 +83,8 @@ export default function IceSlideGamePage() {
     let panelProps = {
         server,
         players,
-        touchControlsEnabled,
-        setTouchControlsEnabled,
+        // touchControlsEnabled,
+        // setTouchControlsEnabled,
         reloadScene,
         // controllerState,
         isFullscreen,

@@ -15,6 +15,7 @@ import { useLocalStorageNew } from '@/hooks/useLocalStorageNew';
 // import IsDev from '@/components/IsDev';
 // import { ChromePicker } from 'react-color';
 import { useSocketStore } from '@/hooks/useSocketStore';
+import { useGameStore } from '@/hooks/useGameStore';
 
 // import GameScoreboard from 'components/Games/GameScoreboard'
 
@@ -39,10 +40,10 @@ const SettingsModal = dynamic(
 
 const assets_src = 'games/Cannon/'
 
-const game_key = 'death-race'
-const game_name = 'Death Race'
+const game_key = 'tug-of-war'
+const game_name = 'Tug of War'
 
-export default function DeathRaceLobbyPage() {
+export default function GameLobbyPage() {
 
     const {
         socket,
@@ -53,11 +54,14 @@ export default function DeathRaceLobbyPage() {
     // const userReduxState = useSelector((state) => state.auth.user_details)
     const userReduxState = false
 
-    const [nickname, setNickname] = useLocalStorageNew("game:nickname", userReduxState.display_name)
+    const nickname = useGameStore(state => state.nickname)
+    const setNickname = useGameStore(state => state.setNickname)
+
+    // const [nickname, setNickname] = useLocalStorageNew("game:nickname", userReduxState.display_name)
 
     const [showInfoModal, setShowInfoModal] = useState(false)
     const [showSettingsModal, setShowSettingsModal] = useState(false)
-    const [showPrivateGameModal, setShowPrivateGameModal] = useState(false)
+    // const [showPrivateGameModal, setShowPrivateGameModal] = useState(false)
 
     const [lobbyDetails, setLobbyDetails] = useState({
         players: [],
@@ -106,7 +110,7 @@ export default function DeathRaceLobbyPage() {
 
     return (
 
-        <div className="ice-slide-landing-page">
+        <div className="tug-of-war-landing-page">
 
             {showInfoModal &&
                 <InfoModal
@@ -122,12 +126,12 @@ export default function DeathRaceLobbyPage() {
                 />
             }
 
-            {showPrivateGameModal &&
+            {/* {showPrivateGameModal &&
                 <PrivateGameModal
                     show={showPrivateGameModal}
                     setShow={setShowPrivateGameModal}
                 />
-            }
+            } */}
 
             <div className='background-wrap'>
                 <Image
@@ -291,7 +295,12 @@ export default function DeathRaceLobbyPage() {
                             Rules & Controls
                         </ArticlesButton>
 
-                        <Link href={'/'} className='w-50'>
+                        <Link
+                            href={'https://github.com/Articles-Joey/tug-of-war'}
+                            className='w-50'
+                            target='_blank'
+                            rel='noopener noreferrer'
+                        >
                             <ArticlesButton
                                 className={`w-100`}
                                 small
@@ -299,8 +308,8 @@ export default function DeathRaceLobbyPage() {
 
                                 }}
                             >
-                                <i className="fad fa-sign-out fa-rotate-180"></i>
-                                Leave Game
+                                <i className="fab fa-github"></i>
+                                Github
                             </ArticlesButton>
                         </Link>
 

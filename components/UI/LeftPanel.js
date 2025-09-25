@@ -1,13 +1,13 @@
 import Link from "next/link";
 
 // import ROUTES from '@/components/constants/routes';
-// import { useGameStore } from "../hooks/useGameStore";
+import useStore, { useGameStore } from "@/hooks/useGameStore";
 import ArticlesButton from "@/components/UI/Button";
 
 // import ControllerPreview from "../../ControllerPreview";
 
 import { useSocketStore } from "@/hooks/useSocketStore";
-import { useIceSlideStore } from "@/hooks/useIceSlideStore";
+// import { useIceSlideStore } from "./hooks/useIceSlideStore";
 import { useEffect, useRef } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 
@@ -16,8 +16,8 @@ export default function LeftPanelContent(props) {
     const {
         server,
         // players,
-        touchControlsEnabled,
-        setTouchControlsEnabled,
+        // touchControlsEnabled,
+        // setTouchControlsEnabled,
         reloadScene,
         controllerState,
         isFullscreen,
@@ -26,69 +26,29 @@ export default function LeftPanelContent(props) {
         setShowMenu
     } = props;
 
-    const {
-        hitRotation,
-        setHitRotation,
-        hitPower,
-        setHitPower
-    } = useIceSlideStore(state => ({
-        hitRotation: state.hitRotation,
-        setHitRotation: state.setHitRotation,
-        hitPower: state.hitPower,
-        setHitPower: state.setHitPower,
-    }));
+    const toontownMode = useGameStore(state => state.toontownMode)
+    const toggleToontownMode = useGameStore(state => state.toggleToontownMode)
+
+    const touchControls = useGameStore(state =>  state.touchControls)
+    const setTouchControls = useGameStore(state =>  state.setTouchControls)
+
+    // const {
+    //     hitRotation,
+    //     setHitRotation,
+    //     hitPower,
+    //     setHitPower
+    // } = useIceSlideStore(state => ({
+    //     hitRotation: state.hitRotation,
+    //     setHitRotation: state.setHitRotation,
+    //     hitPower: state.hitPower,
+    //     setHitPower: state.setHitPower,
+    // }));
 
     const {
         socket,
     } = useSocketStore(state => ({
         socket: state.socket,
     }));
-
-    const hitRotationRef = useRef(hitRotation);
-    useEffect(() => {
-        hitRotationRef.current = hitRotation;
-    }, [hitRotation]);
-
-    useHotkeys(['Right'], () => {
-        console.log("test", hitRotationRef.current)
-        if (hitRotationRef.current >= 360) {
-            setHitRotation(0)
-            return
-        }
-        setHitRotation(hitRotationRef.current + 1)
-    });
-    useHotkeys(['Left'], () => {
-        console.log("test", hitRotationRef.current)
-        if (hitRotationRef.current <= 0) {
-            setHitRotation(360)
-            return
-        }
-        setHitRotation(hitRotationRef.current - 1)
-    });
-
-    const hitPowerRef = useRef(hitPower);
-    useEffect(() => {
-        hitPowerRef.current = hitPower;
-    }, [hitPower]);
-
-    useHotkeys(['Up'], () => {
-        // console.log("test", hitPowerRef.current)
-        if (hitPowerRef.current >= 100) {
-            return
-        }
-        setHitPower(hitPowerRef.current + 1)
-    });
-    useHotkeys(['Down'], () => {
-        // console.log("test", hitPowerRef.current)
-        if (hitPowerRef.current <= 0) {
-            return
-        }
-        setHitPower(hitPowerRef.current - 1)
-    });
-    
-    useHotkeys(['Enter'], () => {
-        console.log("Launch?")
-    });
 
     return (
         <div className='w-100'>
@@ -146,7 +106,7 @@ export default function LeftPanelContent(props) {
                             if (isFullscreen) {
                                 exitFullscreen()
                             } else {
-                                requestFullscreen('maze-game-page')
+                                requestFullscreen('tug-of-war-game-page')
                             }
                         }}
                     >
@@ -204,9 +164,9 @@ export default function LeftPanelContent(props) {
                             <ArticlesButton
                                 size="sm"
                                 className="w-50"
-                                active={!touchControlsEnabled}
+                                active={!touchControls}
                                 onClick={() => {
-                                    setTouchControlsEnabled(false)
+                                    setTouchControls(false)
                                 }}
                             >
                                 <i className="fad fa-redo"></i>
@@ -216,9 +176,9 @@ export default function LeftPanelContent(props) {
                             <ArticlesButton
                                 size="sm"
                                 className="w-50"
-                                active={touchControlsEnabled}
+                                active={touchControls}
                                 onClick={() => {
-                                    setTouchControlsEnabled(true)
+                                    setTouchControls(true)
                                 }}
                             >
                                 <i className="fad fa-redo"></i>
@@ -240,8 +200,15 @@ export default function LeftPanelContent(props) {
                     <div className="small text-muted">Debug Controls</div>
 
                     <div className="small border p-2">
-                        <div>Rotation Angle: {hitRotation}</div>
-                        <div>Power: {hitPower}/100</div>
+                        {/* <div>Rotation Angle: {hitRotation}</div> */}
+                        {/* <div>Power: {hitPower}/100</div> */}
+                        <div
+                            onClick={() => {
+                                toggleToontownMode()
+                            }}
+                        >
+                            Toontown: {toontownMode ? 'On' : 'Off'}
+                        </div>
                     </div>
 
                     <div className='d-flex flex-column'>

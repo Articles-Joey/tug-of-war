@@ -1,6 +1,8 @@
 # Tug of War
 
-...
+
+
+Tap your keys at the proper rate in order to pull and defeat your opponent.
 
 ## Getting Started
 
@@ -12,4 +14,4 @@ npm run dev
 
 ## Multiplayer
 
-Aiming to have multiplayer via P2P and Websockets. Websocket backend code is not in this repo or available at this time. P2P code will be included here.
+Working on multiplayer via Peer to Peer WebRTC

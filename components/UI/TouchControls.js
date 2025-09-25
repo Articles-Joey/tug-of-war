@@ -1,6 +1,7 @@
 import { memo, useEffect, useState } from "react";
 
 import ArticlesButton from "@/components/UI/Button"
+import useStore from "@/hooks/useGameStore";
 import { useControlsStore, useGameStore } from "../hooks/useGameStore"
 
 const arePropsEqual = (prevProps, nextProps) => {
@@ -10,9 +11,11 @@ const arePropsEqual = (prevProps, nextProps) => {
 
 function JumpButtonBase() {
 
-    const {
-        touchControls, setTouchControls
-    } = useControlsStore()
+    // const {
+    //     touchControls, setTouchControls
+    // } = useControlsStore()
+    const touchControls = useControlsStore(state =>  state.touchControls)
+    const setTouchControls = useControlsStore(state =>  state.setTouchControls)
 
     return (
         <ArticlesButton
@@ -33,18 +36,17 @@ const JumpButton = memo(JumpButtonBase, arePropsEqual);
 
 function TouchControlsBase(props) {
 
-    const {
-        touchControlsEnabled,
-    } = props;
+    // const {
+    //     touchControlsEnabled,
+    // } = props;
 
     const [nippleCreated, setNippleCreated] = useState(false)
 
     const [nStart, setnStart] = useState(false)
     const [nDirection, setnDirection] = useState(false)
 
-    const {
-        touchControls, setTouchControls
-    } = useControlsStore()
+    const touchControls = useControlsStore(state =>  state.touchControls)
+    const setTouchControls = useControlsStore(state =>  state.setTouchControls)
 
     function startNipple() {
 
@@ -168,7 +170,7 @@ function TouchControlsBase(props) {
     }, []);
 
     return (
-        <div className={`touch-controls-area ${!touchControlsEnabled && 'd-none'}`}>
+        <div className={`touch-controls-area ${!touchControls && 'd-none'}`}>
 
             <div className='d-flex'>
 
