@@ -1,7 +1,7 @@
 import { createContext, createRef, forwardRef, memo, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 
 import { Canvas, useFrame, useThree } from "@react-three/fiber"
-import { Sky, useDetectGPU, useTexture, OrbitControls, Cylinder, QuadraticBezierLine, Text } from "@react-three/drei";
+import { Sky, useDetectGPU, useTexture, OrbitControls, Cylinder, QuadraticBezierLine, Text, Image, Billboard } from "@react-three/drei";
 
 import { NearestFilter, RepeatWrapping, TextureLoader, Vector3 } from "three";
 
@@ -23,6 +23,7 @@ import ModelToon from "../Models/Toon";
 import Pier from "../Models/Pier";
 import Crate from "../Models/Crate";
 import Fence from "../Models/Fence";
+import FishBucket from "../Models/FishBucket";
 
 const texture = new TextureLoader().load(`${process.env.NEXT_PUBLIC_CDN}games/Race Game/grass.jpg`)
 
@@ -243,6 +244,10 @@ function GameCanvas(props) {
                 args={[80, 4]}
             />
 
+            <FishBucket
+                position={[-6, 3.2, -1]}
+            />
+
             <Crate
                 position={[0, 1, 10]}
                 rotation={[degToRad(15), degToRad(45), 0]}
@@ -260,6 +265,8 @@ function GameCanvas(props) {
 }
 
 export default memo(GameCanvas)
+
+
 
 function People({ position, rotation }) {
 

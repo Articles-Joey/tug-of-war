@@ -1,5 +1,11 @@
 @use "@/styles/components/global.scss" as *;
 
+[data-bs-theme="dark"] {
+    .panel-bg {
+        filter: brightness(0.5)!important;
+    }
+}
+
 .tug-of-war-game-page {
     position: relative;
     display: flex;
@@ -13,7 +19,7 @@
     &.sidebar-hide {
         @include media-breakpoint-up(lg) {
             .menu-bar {
-                display: block!important;
+                display: block !important;
             }
         }
     }
@@ -271,7 +277,7 @@
         z-index: 1;
 
         transform: translateX(-120%);
-        transition-duration: 200ms;        
+        transition-duration: 200ms;
 
         &.sidebar-show {
             transform: translateX(0) translateY(-50%);

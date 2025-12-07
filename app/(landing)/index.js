@@ -356,6 +356,26 @@ export default function GameLobbyPage() {
                             Theme: {theme}
                         </ArticlesButton>
 
+                        {process.env.NODE_ENV === 'development' &&
+                            <ArticlesButton
+                                small
+                                className="w-50"
+                                onClick={() => {
+                                    fetch('/api/openCode')
+                                        .then(response => response.json())
+                                        .then(data => {
+                                            console.log('API Response:', data);
+                                        })
+                                        .catch(error => {
+                                            console.error('API Error:', error);
+                                        });
+                                }}
+                            >
+                                <i className="fad fa-code"></i>
+                                Open Code
+                            </ArticlesButton>
+                        }
+
                     </div>
 
                 </div>

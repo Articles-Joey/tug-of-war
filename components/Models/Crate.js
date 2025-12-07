@@ -13,6 +13,7 @@ texture.magFilter = NearestFilter;
 export default function Crate(props) {
 
     const toontownMode = useGameStore(state => state.toontownMode)
+    
     // bobbing parameters
     const amplitude = props.bobAmplitude ?? 0.25 // vertical range in world units
     const speed = props.bobSpeed ?? 1.2 // cycles per second
