@@ -22,23 +22,14 @@ export function Model(props) {
   const { previewConfig, action } = props
 
   useEffect(() => {
+    if (!actions) return;
 
-    console.log("Actions", actions)
+    const target = action || 'Idle';
+    const clip = actions[target];
+    if (!clip || clip.isRunning()) return;
 
-    // actions[`Idle`].play();
-
-    if (!actions || !action) return
-
-    // Object.values(actions).forEach((a) => a?.stop());
-
-    actions[action]?.stop();
-
-    if (action) {
-      actions[action]?.play();
-    } else {
-      actions[`Idle`]?.play();
-    }
-
+    Object.values(actions).forEach((a) => a?.stop());
+    clip.play();
   }, [actions, action]);
 
   return (

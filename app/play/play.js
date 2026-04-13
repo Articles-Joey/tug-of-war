@@ -12,7 +12,7 @@ import Script from 'next/script'
 
 import ArticlesButton from '@/components/UI/Button';
 
-import useFullscreen from '@/hooks/useFullScreen';
+import useFullscreen from '@articles-media/articles-dev-box/useFullscreen';
 import { useControllerStore } from '@/hooks/useControllerStore';
 // import ControllerPreview from '@/components/Games/ControllerPreview';
 // import { useGameStore } from '@/components/Games/Ocean Rings/hooks/useGameStore';
@@ -74,18 +74,22 @@ export default function IceSlideGamePage() {
 
     // const [touchControlsEnabled, setTouchControlsEnabled] = useLocalStorageNew("game:touchControlsEnabled", false)
 
-    const [sceneKey, setSceneKey] = useState(0);
+    // const [sceneKey, setSceneKey] = useState(0);
+
+    const sceneKey = useGameStore(state => state.sceneKey)
+    // const setSceneKey = useGameStore(state => state.setSceneKey)
+    const reloadScene = useGameStore(state => state.reloadScene)
 
     useHotkeys('r', () => {
-        setSceneKey(prev => prev + 1)
+        reloadScene()
     });
 
     const [gameState, setGameState] = useState(false)
 
     // Function to handle scene reload
-    const reloadScene = () => {
-        setSceneKey((prevKey) => prevKey + 1);
-    };
+    // const reloadScene = () => {
+    //     reloadScene()
+    // };
 
     const { isFullscreen, requestFullscreen, exitFullscreen } = useFullscreen();
 
@@ -94,11 +98,11 @@ export default function IceSlideGamePage() {
         players,
         // touchControlsEnabled,
         // setTouchControlsEnabled,
-        reloadScene,
+        // reloadScene,
         // controllerState,
-        isFullscreen,
-        requestFullscreen,
-        exitFullscreen,
+        // isFullscreen,
+        // requestFullscreen,
+        // exitFullscreen,
         setShowMenu
     }
 

@@ -18,12 +18,9 @@ export function Model(props) {
   const { nodes, materials } = useGraph(clone)
   const { actions } = useAnimations(animations, group)
   useEffect(() => {
-
-    console.log("Actions", actions)
-
-    actions[`Idle`].play();
-
-}, [actions]);
+    if (!actions['Idle'] || actions['Idle'].isRunning()) return;
+    actions['Idle'].play();
+  }, [actions]);
   return (
     <group ref={group} {...props} dispose={null}>
       <group name="Scene">

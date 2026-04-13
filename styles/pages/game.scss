@@ -62,9 +62,9 @@
         bottom: 50px;
         left: 0;
         width: 100%;
-        top: 50px;
+        top: 0px;
         // height: calc(100vh - 50px);
-        z-index: 2;
+        z-index: 3;
         background-color: rgba(0, 0, 0, 0.75);
         transform: translateY(calc(100% + 50px));
         transition-duration: 200ms;
@@ -74,6 +74,11 @@
 
         &.show {
             transform: translateY(0);
+        }
+
+        .mobile-menu-container {
+            max-width: 300px;
+            margin: 0 auto;
         }
 
     }

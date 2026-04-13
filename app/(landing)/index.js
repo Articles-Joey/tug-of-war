@@ -45,8 +45,8 @@ const game_name = 'Tug of War'
 
 export default function GameLobbyPage() {
 
-    const theme = useGameStore(state => state.theme)
-    const toggleTheme = useGameStore(state => state.toggleTheme)
+    // const theme = useGameStore(state => state.theme)
+    // const toggleTheme = useGameStore(state => state.toggleTheme)
 
     const {
         socket,
@@ -54,26 +54,31 @@ export default function GameLobbyPage() {
         socket: state.socket,
     }));
 
-    // const userReduxState = useSelector((state) => state.auth.user_details)
-    const userReduxState = false
+    const darkMode = useGameStore((state) => state.darkMode)
+    const toggleDarkMode = useGameStore((state) => state.toggleDarkMode)
 
     const nickname = useGameStore(state => state.nickname)
     const setNickname = useGameStore(state => state.setNickname)
+    const randomNickname = useGameStore(state => state.randomNickname)
+
+    const _hasHydrated = useGameStore(state => state._hasHydrated)
+    // const setHasHydrated = useGameStore(state => state.setHasHydrated)
 
     // const [nickname, setNickname] = useLocalStorageNew("game:nickname", userReduxState.display_name)
 
-    const [showInfoModal, setShowInfoModal] = useState(false)
-    const [showSettingsModal, setShowSettingsModal] = useState(false)
-    // const [showPrivateGameModal, setShowPrivateGameModal] = useState(false)
+    // const showInfoModal = useGameStore((state) => state.showInfoModal)
+    // const showSettingsModal = useGameStore((state) => state.showSettingsModal)
+    // const showCreditsModal = useGameStore((state) => state.showCreditsModal)
+    const setShowInfoModal = useGameStore((state) => state.setShowInfoModal)
+    const setShowSettingsModal = useGameStore((state) => state.setShowSettingsModal)
+    const setShowCreditsModal = useGameStore((state) => state.setShowCreditsModal)
 
-    const [lobbyDetails, setLobbyDetails] = useState({
-        players: [],
-        games: [],
-    })
+    const lobbyDetails = useGameStore((state) => state.lobbyDetails)
+    const setLobbyDetails = useGameStore((state) => state.setLobbyDetails)
 
     useEffect(() => {
 
-        setShowInfoModal(localStorage.getItem('game:four-frogs:rulesAnControls') === 'true' ? true : false)
+        // setShowInfoModal(localStorage.getItem('game:four-frogs:rulesAnControls') === 'true' ? true : false)
 
         // if (userReduxState._id) {
         //     console.log("Is user")
@@ -95,12 +100,6 @@ export default function GameLobbyPage() {
 
     useEffect(() => {
 
-        localStorage.setItem('game:four-frogs:rulesAnControls', showInfoModal)
-
-    }, [showInfoModal])
-
-    useEffect(() => {
-
         if (socket.connected) {
             socket.emit('join-room', 'game:death-race-landing');
         }
@@ -115,7 +114,7 @@ export default function GameLobbyPage() {
 
         <div className="tug-of-war-landing-page">
 
-            {showInfoModal &&
+            {/* {showInfoModal &&
                 <InfoModal
                     show={showInfoModal}
                     setShow={setShowInfoModal}
@@ -127,7 +126,7 @@ export default function GameLobbyPage() {
                     show={showSettingsModal}
                     setShow={setShowSettingsModal}
                 />
-            }
+            } */}
 
             {/* {showPrivateGameModal &&
                 <PrivateGameModal
@@ -183,14 +182,27 @@ export default function GameLobbyPage() {
                                         setValue={setNickname}
                                         noMargin
                                     /> */}
-                                    <input
-                                        type="text"
-                                        className="form-control"
-                                        id="nickname"
-                                        value={nickname}
-                                        onChange={(e) => setNickname(e.target.value)}
-                                        placeholder="Enter your nickname"
-                                    />
+                                    <div className="d-flex align-items-center">
+                                        <input
+                                            type="text"
+                                            value={(_hasHydrated && nickname !== null) ? nickname : ''}
+                                            disabled={!_hasHydrated}
+                                            placeholder="Enter your nickname"
+                                            onChange={(e) => {
+                                                setNickname(e.target.value)
+                                            }}
+                                            className={`form-control form-control-sm`}
+                                        />
+                                        <ArticlesButton
+                                            small
+                                            className=""
+                                            onClick={() => {
+                                                randomNickname()
+                                            }}
+                                        >
+                                            <i className="fad fa-random"></i>
+                                        </ArticlesButton>
+                                    </div>
                                 </div>
 
                                 <div className='mt-1' style={{ fontSize: '0.8rem' }}>Visible to all players</div>
@@ -291,28 +303,38 @@ export default function GameLobbyPage() {
 
                     <div className="card-footer d-flex flex-wrap justify-content-center">
 
-                        <ArticlesButton
-                            className={`w-50`}
-                            small
-                            onClick={() => {
-                                setShowSettingsModal(prev => !prev)
-                            }}
-                        >
-                            <i className="fad fa-cog"></i>
-                            Settings
-                        </ArticlesButton>
+                        <div className="d-flex w-50">
+                            <ArticlesButton
+                                className={`w-100`}
+                                small
+                                onClick={() => {
+                                    setShowSettingsModal(true)
+                                }}
+                            >
+                                <i className="fad fa-cog"></i>
+                                Settings
+                            </ArticlesButton>
+                            <ArticlesButton
+                                className={``}
+                                small
+                                onClick={() => {
+                                    toggleDarkMode()
+                                }}
+                            >
+                                <i className="fad fa-moon"></i>
+                                {/* Dark Mode */}
+                            </ArticlesButton>
+                        </div>
 
                         <ArticlesButton
                             className={`w-50`}
                             small
                             onClick={() => {
-                                setShowInfoModal({
-                                    game: game_name
-                                })
+                                setShowInfoModal(true)
                             }}
                         >
                             <i className="fad fa-info-square"></i>
-                            Rules & Controls
+                            Info
                         </ArticlesButton>
 
                         <Link
@@ -337,23 +359,11 @@ export default function GameLobbyPage() {
                             className={`w-50`}
                             small
                             onClick={() => {
-                                setShowInfoModal({
-                                    game: game_name
-                                })
+                                setShowCreditsModal(true)
                             }}
                         >
                             <i className="fad fa-users"></i>
                             Credits
-                        </ArticlesButton>
-
-                        <ArticlesButton
-                            small
-                            className="w-50"
-                            onClick={() => {
-                                toggleTheme()
-                            }}
-                        >
-                            Theme: {theme}
                         </ArticlesButton>
 
                         {process.env.NODE_ENV === 'development' &&

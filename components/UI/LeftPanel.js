@@ -13,6 +13,8 @@ import { useSocketStore } from "@/hooks/useSocketStore";
 import { Dropdown, DropdownButton } from "react-bootstrap";
 // import { set } from "date-fns";
 
+import useFullscreen from '@articles-media/articles-dev-box/useFullscreen';
+
 export default function LeftPanelContent(props) {
 
     const {
@@ -20,28 +22,34 @@ export default function LeftPanelContent(props) {
         // players,
         // touchControlsEnabled,
         // setTouchControlsEnabled,
-        reloadScene,
+        // reloadScene,
         controllerState,
-        isFullscreen,
-        requestFullscreen,
-        exitFullscreen,
-        setShowMenu
+        // isFullscreen,
+        // requestFullscreen,
+        // exitFullscreen,
+        // setShowMenu
     } = props;
 
-    const toontownMode = useGameStore(state => state.toontownMode)
-    const toggleToontownMode = useGameStore(state => state.toggleToontownMode)
+    // const toontownMode = useGameStore(state => state.toontownMode)
+    // const toggleToontownMode = useGameStore(state => state.toggleToontownMode)
+
+    const { isFullscreen, requestFullscreen, exitFullscreen } = useFullscreen();
 
     const touchControls = useGameStore(state => state.touchControls)
     const setTouchControls = useGameStore(state => state.setTouchControls)
 
-    const theme = useGameStore(state => state.theme)
-    const toggleTheme = useGameStore(state => state.toggleTheme)
+    // const theme = useGameStore(state => state.theme)
+    // const toggleTheme = useGameStore(state => state.toggleTheme)
+
+    const toggleDarkMode = useGameStore(state => state.toggleDarkMode)
 
     const sidebar = useGameStore(state => state.sidebar)
     const toggleSidebar = useGameStore(state => state.toggleSidebar)
 
     const cameraMode = useGameStore(state => state.cameraMode)
     const setCameraMode = useGameStore(state => state.setCameraMode)
+
+    const setShowSettingsModal = useGameStore((state) => state.setShowSettingsModal)
 
     // const {
     //     hitRotation,
@@ -62,7 +70,7 @@ export default function LeftPanelContent(props) {
     }));
 
     return (
-        <div className='w-100'>
+        <div className='mobile-menu-container w-100'>
 
             <div className="card card-articles card-sm">
 
@@ -132,7 +140,7 @@ export default function LeftPanelContent(props) {
                         <span>Fullscreen</span>
                     </ArticlesButton>
 
-                    <ArticlesButton
+                    {/* <ArticlesButton
                         small
                         className="w-50"
                         onClick={() => {
@@ -140,53 +148,78 @@ export default function LeftPanelContent(props) {
                         }}
                     >
                         Theme: {theme}
-                    </ArticlesButton>
+                    </ArticlesButton> */}
 
-                    <ArticlesButton
-                        small
-                        className="w-50"
-                        active={sidebar}
-                        onClick={() => {
-                            toggleSidebar()
-                        }}
-                    >
-                        Sidebar: {sidebar ? 'On' : 'Off'}
-                    </ArticlesButton>
-
-                    <DropdownButton
-                        variant="articles w-100"
-                        size='sm'
-                        id="dropdown-basic-button"
-                        className="dropdown-articles"
-                        title={
-                            <span>
-                                <i className="fad fa-bug"></i>
-                                <span>Camera: {cameraMode}</span>
-                            </span>
-                        }
-                    >
-
-                        <div style={{ maxHeight: '600px', overflowY: 'auto', width: '200px' }}>
-
-                            {[
-                                "Orbit",
-                                "Controlled"
-                            ]
-                                .map((choice, index) =>
-                                    <Dropdown.Item
-                                        key={index}
-                                        onClick={() => {
-                                            setCameraMode(choice)
-                                        }}
-                                        className="d-flex justify-content-between"
-                                    >
-                                        {choice}
-                                    </Dropdown.Item>
-                                )}
-
+                    <div className="d-flex flex-wrap">
+                        <div className="d-flex w-50">
+                            <ArticlesButton
+                                className={`w-100`}
+                                small
+                                onClick={() => {
+                                    setShowSettingsModal(true)
+                                }}
+                            >
+                                <i className="fad fa-cog"></i>
+                                Settings
+                            </ArticlesButton>
+                            <ArticlesButton
+                                className={``}
+                                small
+                                onClick={() => {
+                                    toggleDarkMode()
+                                }}
+                            >
+                                <i className="fad fa-moon"></i>
+                                {/* Dark Mode */}
+                            </ArticlesButton>
                         </div>
 
-                    </DropdownButton>
+                        <ArticlesButton
+                            small
+                            className="w-50"
+                            active={sidebar}
+                            onClick={() => {
+                                toggleSidebar()
+                            }}
+                        >
+                            Sidebar: {sidebar ? 'On' : 'Off'}
+                        </ArticlesButton>
+
+                        <DropdownButton
+                            variant="articles w-100"
+                            size='sm'
+                            id="dropdown-basic-button"
+                            className="dropdown-articles"
+                            title={
+                                <span>
+                                    <i className="fad fa-bug"></i>
+                                    <span>Camera: {cameraMode}</span>
+                                </span>
+                            }
+                        >
+
+                            <div style={{ maxHeight: '600px', overflowY: 'auto', width: '200px' }}>
+
+                                {[
+                                    "Orbit",
+                                    "Controlled"
+                                ]
+                                    .map((choice, index) =>
+                                        <Dropdown.Item
+                                            key={index}
+                                            onClick={() => {
+                                                setCameraMode(choice)
+                                            }}
+                                            className="d-flex justify-content-between"
+                                        >
+                                            {choice}
+                                        </Dropdown.Item>
+                                    )}
+
+                            </div>
+
+                        </DropdownButton>
+                    </div>
 
                 </div>
             </div>
@@ -265,55 +298,7 @@ export default function LeftPanelContent(props) {
             </div>
 
             {/* Debug Controls */}
-            <div
-                className="card card-articles card-sm"
-            >
-                <div className="card-body">
-
-                    <div className="small text-muted">Debug Controls</div>
-
-                    <div className="small border p-2 mb-2">
-                        {/* <div>Rotation Angle: {hitRotation}</div> */}
-                        {/* <div>Power: {hitPower}/100</div> */}
-                        <div
-                            onClick={() => {
-                                toggleToontownMode()
-                            }}
-                        >
-                            <span>Toontown: </span>
-                            <span>{toontownMode ? 'On' : 'Off'}</span>
-                            <span className="badge bg-black ms-2">
-                                <i className={`fad fa-redo me-0`}></i>
-                            </span>
-                        </div>
-                    </div>
-
-                    <div className='d-flex flex-column'>
-
-                        <div>
-                            <ArticlesButton
-                                size="sm"
-                                className="w-50"
-                                onClick={reloadScene}
-                            >
-                                <i className="fad fa-redo"></i>
-                                Reload Game
-                            </ArticlesButton>
-
-                            <ArticlesButton
-                                size="sm"
-                                className="w-50"
-                                onClick={reloadScene}
-                            >
-                                <i className="fad fa-redo"></i>
-                                Reset Camera
-                            </ArticlesButton>
-                        </div>
-
-                    </div>
-
-                </div>
-            </div>
+            <DebugPanel />
 
             {controllerState?.connected &&
                 <div className="panel-content-group p-0 text-dark">
@@ -351,6 +336,72 @@ export default function LeftPanelContent(props) {
                 </div>
             }
 
+        </div>
+    )
+
+}
+
+function DebugPanel() {
+
+    const debug = useGameStore(state => state.debug)
+
+    const toontownMode = useGameStore(state => state.toontownMode)
+    const toggleToontownMode = useGameStore(state => state.toggleToontownMode)
+
+    // const setSceneKey = useGameStore(state => state.setSceneKey)
+    const reloadScene = useGameStore(state => state.reloadScene)
+
+    if (!debug) return null
+
+    return (
+        <div
+            className="card card-articles card-sm"
+        >
+            <div className="card-body">
+
+                <div className="small text-muted">Debug Controls</div>
+
+                <div className="small border p-2 mb-2">
+                    {/* <div>Rotation Angle: {hitRotation}</div> */}
+                    {/* <div>Power: {hitPower}/100</div> */}
+                    <div
+                        onClick={() => {
+                            toggleToontownMode()
+                        }}
+                    >
+                        <span>Toontown: </span>
+                        <span>{toontownMode ? 'On' : 'Off'}</span>
+                        <span className="badge bg-black ms-2">
+                            <i className={`fad fa-redo me-0`}></i>
+                        </span>
+                    </div>
+                </div>
+
+                <div className='d-flex flex-column'>
+
+                    <div>
+                        <ArticlesButton
+                            size="sm"
+                            className="w-50"
+                            onClick={reloadScene}
+                        >
+                            <i className="fad fa-redo"></i>
+                            Reload Game
+                        </ArticlesButton>
+
+                        <ArticlesButton
+                            size="sm"
+                            className="w-50"
+                            onClick={reloadScene}
+                        >
+                            <i className="fad fa-redo"></i>
+                            Reset Camera
+                        </ArticlesButton>
+                    </div>
+
+                </div>
+
+            </div>
         </div>
     )
 
