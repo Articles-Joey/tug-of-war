@@ -18,9 +18,11 @@ const tugNouns = [
  * Generates a random tug-of-war-themed nickname.
  * @returns {string} A random nickname like "StrongPuller42" or "MightyAnchor7".
  */
-export const generateRandomNickname = () => {
+const generateRandomNickname = () => {
     const adj = adjectives[Math.floor(Math.random() * adjectives.length)];
     const noun = tugNouns[Math.floor(Math.random() * tugNouns.length)];
     const num = Math.floor(Math.random() * 100);
     return `${adj}${noun}${num}`;
 };
+
+export default generateRandomNickname;

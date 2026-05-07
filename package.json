@@ -5,13 +5,13 @@
   "homepage": "https://tug-of-war.articles.media/",
   "github": "https://github.com/Articles-Joey/tug-of-war",
   "scripts": {
-    "dev": "next dev -p 3025",
-    "build": "next build",
+    "dev": "next dev --webpack -p 3025",
+    "build": "next build --webpack",
     "start": "next start",
     "lint": "next lint"
   },
   "dependencies": {
-    "@articles-media/articles-dev-box": "^1.0.25",
+    "@articles-media/articles-dev-box": "^1.0.42",
     "@articles-media/articles-gamepad-helper": "^0.0.13",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",

@@ -1,7 +1,7 @@
 import { createContext, createRef, forwardRef, memo, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 
 import { Canvas, useFrame, useThree } from "@react-three/fiber"
-import { Sky, useDetectGPU, useTexture, OrbitControls, Cylinder, QuadraticBezierLine, Text, Image, Billboard } from "@react-three/drei";
+import { Sky, useDetectGPU, useTexture, OrbitControls, Cylinder, QuadraticBezierLine, Text, Image, Billboard, Stats } from "@react-three/drei";
 
 import { NearestFilter, RepeatWrapping, TextureLoader, Vector3 } from "three";
 
@@ -24,6 +24,7 @@ import Pier from "../Models/Pier";
 import Crate from "../Models/Crate";
 import Fence from "../Models/Fence";
 import FishBucket from "../Models/FishBucket";
+import { useStore } from "@/hooks/useStore";
 
 const texture = new TextureLoader().load(`${process.env.NEXT_PUBLIC_CDN}games/Race Game/grass.jpg`)
 
@@ -49,28 +50,8 @@ const GrassPlane = ({ position }) => {
 
 function GameCanvas(props) {
 
-    const theme = useGameStore(state => state.theme);
-
-    // const GPUTier = useDetectGPU()
-
-    // const {
-    //     playerRotation,
-    //     setPlayerRotation
-    // } = useCannonStore(state => ({
-    //     playerRotation: state.playerRotation,
-    //     setPlayerRotation: state.setPlayerRotation
-    // }));
-
-    const {
-        handleCameraChange,
-        gameState,
-        players,
-        move,
-        cameraInfo,
-        server
-    } = props;
-
-    const [[a, b, c, d, e]] = useState(() => [...Array(5)].map(createRef))
+    const darkMode = useStore(state => state.darkMode)
+    const showStats = useStore((state) => state?.debugConfig?.showStats);
 
     return (
         <Canvas
@@ -80,6 +61,10 @@ function GameCanvas(props) {
             }}
         >
 
+            {showStats && <>
+                <Stats className="stats-overlay" />
+            </>}
+
             <OrbitControls
             // autoRotate={gameState?.status == 'In Lobby'}
             />
@@ -88,7 +73,7 @@ function GameCanvas(props) {
                 // distance={450000}
                 sunPosition={[
                     0,
-                    theme == "Light" ? 10 : -10,
+                    darkMode ? -1 : 1,
                     0
                 ]}
             // inclination={0}
@@ -96,7 +81,7 @@ function GameCanvas(props) {
             // {...props} 
             />
 
-            {theme == "Light" ?
+            {!darkMode ?
                 <>
                     <ambientLight intensity={2} />
                     <spotLight
@@ -270,7 +255,7 @@ export default memo(GameCanvas)
 
 function People({ position, rotation }) {
 
-    const toontownMode = useGameStore(state => state.toontownMode)
+    const toontownMode = useStore(state => state.toontownMode)
 
     const peopleRef = useRef();
     const [direction, setDirection] = useState(1); // 1 for forward, -1 for backward

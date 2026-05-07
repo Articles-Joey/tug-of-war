@@ -2,7 +2,7 @@ import { useRef, useMemo } from "react";
 import { useFrame } from "@react-three/fiber";
 import { Box, useGLTF } from "@react-three/drei";
 import { NearestFilter, RepeatWrapping, TextureLoader } from "three"
-import { useGameStore } from "@/hooks/useGameStore";
+// import { useGameStore } from "@/hooks/useGameStore";
 
 const texture = new TextureLoader().load(`img/box.png`)
 texture.wrapS = RepeatWrapping;
@@ -12,7 +12,7 @@ texture.magFilter = NearestFilter;
 
 export default function Crate(props) {
 
-    const toontownMode = useGameStore(state => state.toontownMode)
+    // const toontownMode = useStore(state => state.toontownMode)
     
     // bobbing parameters
     const amplitude = props.bobAmplitude ?? 0.25 // vertical range in world units

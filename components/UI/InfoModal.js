@@ -1,39 +1,9 @@
 import { useEffect, useState } from "react";
 
-import Image from "next/image";
-import dynamic from 'next/dynamic'
-
-// import { useSelector } from 'react-redux'
-
 import { Modal } from "react-bootstrap"
 
-import ViewUserModal from "@/components/UI/ViewUserModal"
-
-// import BasicLoading from "@/components/loading/BasicLoading";
-
-// import powerups from "app/(site)/community/games/four-frogs/components/powerups";
-
-// import games from "../constants/games";
-const games = []
-
-import IsDev from "@/components/UI/IsDev";
 import ArticlesButton from "./Button";
-
-const registeredGames = [
-    'Four Frogs',
-    'Race Game',
-    'Eager Eagle',
-    'Plinko',
-    'Battle Trap',
-    'Blackjack',
-    'Ping Pong',
-    'Tower Blocks',
-    'Assets Gallery',
-    'Tic Tac Toe',
-    'Ocean Rings',
-    'Maze',
-    'School Run'
-]
+import { useStore } from "@/hooks/useStore";
 
 export default function GameInfoModal({
     show,
@@ -43,25 +13,10 @@ export default function GameInfoModal({
 
     const [showModal, setShowModal] = useState(true)
 
-    // const userReduxState = useSelector((state) => state.auth.user_details);
-    const userReduxState = false
-
-    const [showVideo, setShowVideo] = useState()
+    const darkMode = useStore(state => state.darkMode)
 
     return (
         <>
-            {/* {lightboxData && (
-                <Lightbox
-                    mainSrc={lightboxData?.location}
-                    onCloseRequest={() => setLightboxData(null)}
-                    reactModalStyle={{
-                        overlay: {
-                            zIndex: '2000'
-                        }
-                    }}
-                />
-            )} */}
-
             <Modal
                 className="articles-modal games-info-modal"
                 size='md'
@@ -81,6 +36,14 @@ export default function GameInfoModal({
                 </Modal.Header>
 
                 <Modal.Body className="flex-column p-0">
+
+                    <div className="ratio ratio-16x9">
+                        {darkMode ?
+                            <img src={"img/game-preview.gif"}></img>
+                            :
+                            <img src={"img/game-preview.gif"}></img>
+                        }
+                    </div>
 
                     <div className="p-3">
 

@@ -1,16 +1,16 @@
 "use client"
 import { useEffect, useContext, useState, useRef, useMemo } from 'react';
 import { useKeyboard } from '@/hooks/useKeyboard';
-import Arrow from '../UI/Arrow';
+// import Arrow from '../UI/Arrow';
+import { useGameStore } from '@/hooks/useGameStore';
 
 export default function PowerMeter() {
 
     const { moveRight, moveLeft } = useKeyboard()
 
-    const [
-        history,
-        setHistory
-    ] = useState([]);
+    const history = useGameStore((state) => state.history);
+    const setHistory = useGameStore((state) => state.setHistory);
+    const addToHistory = useGameStore((state) => state.addToHistory);
 
     const [averageInterval, setAverageInterval] = useState(0);
 
@@ -21,24 +21,22 @@ export default function PowerMeter() {
             // Build a history of moves
             // Calculate meter percent
 
-            setHistory([
-                ...history,
+            addToHistory(
                 {
                     ...(moveRight && { move: 'Right' }),
                     ...(moveLeft && { move: 'Left' }),
                     date: new Date()
                 }
-            ])
+            )
 
         }
     }, [moveRight, moveLeft])
 
     useEffect(() => {
         const interval = setInterval(() => {
-            const now = new Date();
-            setHistory((prevHistory) =>
-                prevHistory.filter((entry) => now - new Date(entry.date) <= 5000)
-            );
+
+            useGameStore.getState().removeOldHistoryEntries();
+
         }, 1000); // Run cleanup every second
 
         return () => clearInterval(interval); // Cleanup on component unmount
@@ -89,44 +87,44 @@ export default function PowerMeter() {
 
             {/* <div className="card card-articles card-sm h-100 w-100"> */}
 
-                <img
-                    className='panel-bg'
-                    src="img/panel_bg.png"
+            <img
+                className='panel-bg'
+                src="img/panel_bg.png"
+            >
+
+            </img>
+
+            <span className='power-meter-label'>Power Meter</span>
+
+            <div className="meter">
+
+                <div
+                    className="current-bar"
+                    style={{
+                        height: calculatedHeight
+                    }}
                 >
 
-                </img>
-
-                <span className='power-meter-label'>Power Meter</span>
-
-                <div className="meter">
-
-                    <div
-                        className="current-bar"
-                        style={{
-                            height: calculatedHeight
-                        }}
-                    >
-
-                    </div>
-
-                    <div className="target-bar"></div>
-
                 </div>
 
-                <div className="arrows">
-                    {/* <Arrow /> */}
-                    <i className={`left fad ${moveLeft ? 'active' : ''} fa-2x px-1 fa-arrow-alt-square-left me-0`}></i>
-                    <i className={`right fad ${moveRight ? 'active' : ''} fa-2x px-1 fa-arrow-alt-square-right me-0`}></i>
-                </div>
+                <div className="target-bar"></div>
 
-                {/* <div className="card-header d-flex justify-content-center small">
+            </div>
+
+            <div className="arrows">
+                {/* <Arrow /> */}
+                <i className={`left fad ${moveLeft ? 'active' : ''} fa-2x px-1 fa-arrow-alt-square-left me-0`}></i>
+                <i className={`right fad ${moveRight ? 'active' : ''} fa-2x px-1 fa-arrow-alt-square-right me-0`}></i>
+            </div>
+
+            {/* <div className="card-header d-flex justify-content-center small">
                     <span>Power Meter</span>
                     <span>
                         {history.length} - {averageInterval}
                     </span>
                 </div> */}
 
-                {/* <div className="card-body h-100 flex-grow-1 p-0 d-flex justify-content-center align-items-center">
+            {/* <div className="card-body h-100 flex-grow-1 p-0 d-flex justify-content-center align-items-center">
 
                     <div className="meter">
 
@@ -145,7 +143,7 @@ export default function PowerMeter() {
 
                 </div> */}
 
-                {/* <div className="card-footer d-flex justify-content-center">
+            {/* <div className="card-footer d-flex justify-content-center">
                     <i className={`${moveLeft ? 'fad' : 'fas'} fa-2x px-1 fa-arrow-circle-left me-0`}></i>
                     <i className={`${moveRight ? 'fad' : 'fas'} fa-2x px-1 fa-arrow-circle-right me-0`}></i>
                 </div> */}

@@ -17,7 +17,7 @@ textureFlipped.magFilter = NearestFilter;
 
 function Pier({ position, rotation, flipTexture }) {
 
-    const toontownMode = useGameStore(state => state.toontownMode)
+    // const toontownMode = useStore(state => state.toontownMode)
 
     if (!flipTexture) {
 
