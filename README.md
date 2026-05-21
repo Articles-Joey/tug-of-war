@@ -25,4 +25,6 @@ This game was inspired by a mini game inside the game Toontown Online.
 ## Attributions
 
 [Music - Cyberwave Orchestra](https://pixabay.com/users/cyberwave-orchestra-23801316)  
-[Toontown Music]()
+[Toontown Music]()  
+[Jumprope Model - Google](https://poly.pizza/m/4iUoadv_eqr)  
+[Rope Font - Senekaligrafika](https://www.fontspace.com/cowboy-rope-font-f75046)  

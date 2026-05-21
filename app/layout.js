@@ -7,27 +7,15 @@ import theme from '@/theme';
 
 import "bootstrap/dist/css/bootstrap.min.css";
 
-// import "./globals.css";
 import "@/styles/index.scss";
 
 import "@articles-media/articles-dev-box/dist/style.css";
 
 import "@articles-media/articles-gamepad-helper/dist/articles-gamepad-helper.css";
 
-import SocketLogicHandler from "@/components/SocketLogicHandler";
+import SocketLogicHandler from "@/components/Handlers/SocketLogicHandler";
 import LayoutClient from './layout-client';
 import { Suspense } from 'react';
-import GlobalClientModals from '@/components/UI/GlobalClientModals';
-
-// const geistSans = Geist({
-//   variable: "--font-geist-sans",
-//   subsets: ["latin"],
-// });
-
-// const geistMono = Geist_Mono({
-//   variable: "--font-geist-mono",
-//   subsets: ["latin"],
-// });
 
 export const metadata = {
   title: "Tug of War",
@@ -40,22 +28,15 @@ export default function RootLayout({ children }) {
 
       <head>
 
-        {/* <link
-          rel="stylesheet"
-          href={`${process.env.NEXT_PUBLIC_CDN}fonts/fontawesome/css/all.min.css`}
-        /> */}
-
       </head>
 
-      <body
-      // className={`${geistSans.variable} ${geistMono.variable}`}
-      >
-
-        <SocketLogicHandler />
+      <body>
+        
         <LayoutClient />
 
         <Suspense>
-          <GlobalClientModals />
+          <SocketLogicHandler />
+          {/* <GlobalClientModals /> */}
         </Suspense>
 
         <AppRouterCacheProvider options={{ enableCssLayer: true }}>

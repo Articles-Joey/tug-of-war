@@ -104,3 +104,17 @@ $shadow-articles: 0 0 0 1px rgba(0, 0, 0, 25%), 0 2px 3px rgba(0, 0, 0, 20%);
     font-display: swap;
     /* Optional: Controls font loading behavior */
 }
+
+@font-face {
+    font-family: "CowboyRope";
+    src: url("/font/CowboyRope.ttf") format("truetype");
+    //   src: url('/font/stencilla.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+    /* Optional: Controls font loading behavior */
+}
+
+.CowboyRope {
+    font-family: "CowboyRope", cursive, sans-serif;
+}

@@ -6,6 +6,7 @@ import { useSocketStore } from "@/hooks/useSocketStore";
 import GameMenuPrimaryButtonGroup from '@articles-media/articles-dev-box/GameMenuPrimaryButtonGroup';
 import { useStore } from "@/hooks/useStore";
 import DebugPanel from "./DebugPanel";
+import { useRouter } from "next/navigation";
 
 export default function LeftPanelContent(props) {
 
@@ -34,6 +35,7 @@ export default function LeftPanelContent(props) {
                         <GameMenuPrimaryButtonGroup 
                             useStore={useStore}
                             type="GameMenu"
+                            useRouter={useRouter}
                         />
                     </div>
 

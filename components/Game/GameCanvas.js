@@ -1,4 +1,4 @@
-import { createContext, createRef, forwardRef, memo, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { createContext, createRef, forwardRef, memo, Suspense, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 
 import { Canvas, useFrame, useThree } from "@react-three/fiber"
 import { Sky, useDetectGPU, useTexture, OrbitControls, Cylinder, QuadraticBezierLine, Text, Image, Billboard, Stats } from "@react-three/drei";
@@ -13,42 +13,13 @@ import WaterPlane from "./WaterPlane";
 
 import { Model as ModelSoldierWoman } from "@/components/Models/Soldier";
 import { Model as ModelKingMen } from "@/components/Models/King";
-import { ModelQuaterniusFishingShark } from "@/components/Models/Shark";
-import Tree from "@/components/Models/Tree";
 
-import { ModelKennyNLPirateShipWreck } from "@/components/Models/ship_wreck";
-import { useGameStore } from "@/hooks/useGameStore";
 import CogFlunky from "../Models/Flunky";
 import ModelToon from "../Models/Toon";
-import Pier from "../Models/Pier";
-import Crate from "../Models/Crate";
-import Fence from "../Models/Fence";
-import FishBucket from "../Models/FishBucket";
 import { useStore } from "@/hooks/useStore";
+import ShipScene from "./ShipScene";
 
-const texture = new TextureLoader().load(`${process.env.NEXT_PUBLIC_CDN}games/Race Game/grass.jpg`)
-
-const GrassPlane = ({ position }) => {
-
-    const width = 200; // Set the width of the plane
-    const height = 150; // Set the height of the plane
-
-    texture.magFilter = NearestFilter;
-    texture.wrapS = RepeatWrapping
-    texture.wrapT = RepeatWrapping
-    texture.repeat.set(5, 5)
-
-    return (
-        <>
-            <mesh rotation={[-Math.PI / 2, 0, 0]} position={position}>
-                <planeGeometry attach="geometry" args={[width, height]} />
-                <meshStandardMaterial attach="material" map={texture} />
-            </mesh>
-        </>
-    );
-};
-
-function GameCanvas(props) {
+function GameCanvas({ landingAnimationMode = false }) {
 
     const darkMode = useStore(state => state.darkMode)
     const showStats = useStore((state) => state?.debugConfig?.showStats);
@@ -65,20 +36,14 @@ function GameCanvas(props) {
                 <Stats className="stats-overlay" />
             </>}
 
-            <OrbitControls
-            // autoRotate={gameState?.status == 'In Lobby'}
-            />
+            {!landingAnimationMode && <OrbitControls />}
 
             <Sky
-                // distance={450000}
                 sunPosition={[
                     0,
                     darkMode ? -1 : 1,
                     0
                 ]}
-            // inclination={0}
-            // azimuth={0.25}
-            // {...props} 
             />
 
             {!darkMode ?
@@ -103,155 +68,25 @@ function GameCanvas(props) {
                 </>
             }
 
-            {/* <pointLight position={[-10, -10, -10]} /> */}
-
-            {/* <FlatRing
-                args={[3, 5, 32]}
-                color={"gold"}
-            />
-
-            <FlatRing
-                args={[6, 8, 32]}
-                color={"white"}
-            /> */}
-
-            <Tree
-                scale={1}
-                position={[0, 0.25, -35]}
-            />
-
-            <Tree
-                scale={1}
-                position={[-20, 0.25, -35]}
-            />
-
-            <Tree
-                scale={1}
-                position={[20, 0.25, -35]}
-            />
-
-            <ModelQuaterniusFishingShark
-                position={[-5, 0.25, -10]}
-                rotation={[0, degToRad(45), 0]}
-            />
-
-            <ModelQuaterniusFishingShark
-                position={[5, 0.25, -10]}
-                rotation={[0, degToRad(-45), 0]}
-            />
-
-            <ModelKennyNLPirateShipWreck
-                position={[0, -5, 30]}
-                rotation={[0, degToRad(45), 0]}
-                scale={5}
-            />
-
-            <GrassPlane
-                position={[0, 0.25, 100]}
-            />
-
-            <GrassPlane
-                position={[0, 0.25, -100]}
-            />
-
-            <Rocks />
-
-            <WaterPlane
-                position={[0, 0, 0]}
-            />
-
-            <People />
-
-            {/* <group ref={peopleRef}>
-                <ModelSoldierWoman
-                    scale={3}
-                    rotation={[0, degToRad(90), 0]}
-                    position={[-10, 2.25, 0]}
+            <Suspense>
+                <WaterPlane
+                    position={[0, 0, 0]}
                 />
+            </Suspense>
 
-                <ModelKingMen
-                    scale={3}
-                    rotation={[0, degToRad(-90), 0]}
-                    position={[10, 2.25, 0]}
-                />
+            <Suspense>
+                <People />
+            </Suspense>
 
-                <Rope
-                    position={[0, 5, -0.6]}
-                />
-            </group> */}
-
-            <group>
-                <Pier
-                    position={[-10, 2, 0]}
-                    flipTexture={true}
-                />
-
-                <Pier
-                    position={[-17.5, 2, 2.5]}
-                    rotation={[0, degToRad(-90), 0]}
-                />
-
-                <Pier
-                    position={[-17.5, 2, 12.5]}
-                    rotation={[0, degToRad(-90), 0]}
-                />
-
-                <Pier
-                    position={[-17.5, 2, 22.5]}
-                    rotation={[0, degToRad(-90), 0]}
-                />
-            </group>
-
-            <group>
-                <Pier
-                    position={[10, 2, 0]}
-                    flipTexture={true}
-                />
-
-                <Pier
-                    position={[17.5, 2, 2.5]}
-                    rotation={[0, degToRad(-90), 0]}
-                />
-
-                <Pier
-                    position={[17.5, 2, 12.5]}
-                    rotation={[0, degToRad(-90), 0]}
-                />
-
-                <Pier
-                    position={[17.5, 2, 22.5]}
-                    rotation={[0, degToRad(-90), 0]}
-                />
-            </group>
-
-            <Fence
-                position={[0, 2.25, -30]}
-                args={[80, 4]}
-            />
-
-            <FishBucket
-                position={[-6, 3.2, -1]}
-            />
-
-            <Crate
-                position={[0, 1, 10]}
-                rotation={[degToRad(15), degToRad(45), 0]}
-            />
-
-            <Crate
-                position={[3, 1, 18]}
-                rotation={[degToRad(15), degToRad(45), 0]}
-            />
-
-            {/* <Walls /> */}
+            <Suspense>
+                <ShipScene />
+            </Suspense>
 
         </Canvas>
     )
 }
 
 export default memo(GameCanvas)
-
-
 
 function People({ position, rotation }) {
 
@@ -357,37 +192,6 @@ function Rope({ position }) {
                 <meshStandardMaterial color="yellow" />
             </mesh>
 
-        </group>
-    )
-
-}
-
-
-
-function Rocks() {
-
-    return (
-        <group>
-            <ModelKennyNLGraveyardRocksTall
-                scale={30}
-                position={[-100, 0, -100]}
-            />
-            <ModelKennyNLGraveyardRocksTall
-                scale={50}
-                position={[-50, 0, -100]}
-            />
-            <ModelKennyNLGraveyardRocksTall
-                scale={100}
-                position={[0, 0, -100]}
-            />
-            <ModelKennyNLGraveyardRocksTall
-                scale={50}
-                position={[50, 0, -100]}
-            />
-            <ModelKennyNLGraveyardRocksTall
-                scale={30}
-                position={[100, 0, -100]}
-            />
         </group>
     )
 
