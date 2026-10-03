@@ -1,76 +1,41 @@
-import { useGameStore } from "@/hooks/useGameStore"
-import ArticlesButton from "./Button"
-import { useStore } from "@/hooks/useStore"
+"use client";
+
+import Box from "@mui/material/Box";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import RestartAltIcon from "@mui/icons-material/RestartAlt";
+import { useGameStore } from "@/hooks/useGameStore";
+import { useStore } from "@/hooks/useStore";
+import ArticlesButton from "./Button";
 
 export default function DebugPanel() {
-
-    const debug = useStore(state => state.debug)
-    const toontownMode = useStore(state => state.toontownMode)
-    const toggleToontownMode = useStore(state => state.toggleToontownMode)
-    const reloadScene = useStore(state => state.reloadScene)
-
+    const debug = useStore((state) => state.debug);
+    const toontownMode = useStore((state) => state.toontownMode);
+    const toggleToontownMode = useStore((state) => state.toggleToontownMode);
+    const reloadScene = useStore((state) => state.reloadScene);
     const history = useGameStore((state) => state.history);
 
-    if (!debug) return null
+    if (!debug) return null;
 
     return (
-        <div
-            className="card card-articles card-sm"
-        >
-            <div className="card-body">
-
-                <div className="small text-muted">Debug Controls</div>
-
-                <div className="small border p-2 mb-2">
-                    {/* <div>Rotation Angle: {hitRotation}</div> */}
-                    {/* <div>Power: {hitPower}/100</div> */}
-                    <div
-                        onClick={() => {
-                            toggleToontownMode()
-                        }}
-                    >
-                        <span>Toontown: </span>
-                        <span>{toontownMode ? 'On' : 'Off'}</span>
-                        <span className="badge bg-black ms-2">
-                            <i className={`fad fa-redo me-0`}></i>
-                        </span>
-                    </div>
-                </div>
-
-                <div className="border p-2 mb-2">
-                    {history?.length > 0 && history.map((entry, index) => (
-                        <div key={index} className="small">
-                            {entry.move} - {new Date(entry.date).toLocaleTimeString()}
-                        </div>
+        <Card sx={{ bgcolor: "game.card", backgroundImage: "none", fontSize: "0.875rem", border: "3px solid", borderColor: "game.cardBorder" }}>
+            <CardContent sx={{ p: 1, "&:last-child": { pb: 1 } }}>
+                <Box sx={{ fontSize: "0.875em", color: "text.secondary" }}>Debug Controls</Box>
+                <Box sx={{ fontSize: "0.875em", border: 1, borderColor: "divider", p: 1, mb: 1 }}>
+                    <ArticlesButton small variant="link" onClick={toggleToontownMode} endIcon={<RestartAltIcon />}>
+                        Toontown: {toontownMode ? "On" : "Off"}
+                    </ArticlesButton>
+                </Box>
+                <Box sx={{ border: 1, borderColor: "divider", p: 1, mb: 1 }}>
+                    {history?.map((entry, index) => (
+                        <Box key={index} sx={{ fontSize: "0.875em" }}>{entry.move} - {new Date(entry.date).toLocaleTimeString()}</Box>
                     ))}
-                </div>
-
-                <div className='d-flex flex-column'>
-
-                    <div>
-                        <ArticlesButton
-                            size="sm"
-                            className="w-50"
-                            onClick={reloadScene}
-                        >
-                            <i className="fad fa-redo"></i>
-                            Reload Game
-                        </ArticlesButton>
-
-                        <ArticlesButton
-                            size="sm"
-                            className="w-50"
-                            onClick={reloadScene}
-                        >
-                            <i className="fad fa-redo"></i>
-                            Reset Camera
-                        </ArticlesButton>
-                    </div>
-
-                </div>
-
-            </div>
-        </div>
-    )
-
+                </Box>
+                <Box sx={{ display: "flex" }}>
+                    <ArticlesButton small sx={{ width: "50%" }} onClick={reloadScene} startIcon={<RestartAltIcon />}>Reload Game</ArticlesButton>
+                    <ArticlesButton small sx={{ width: "50%" }} onClick={reloadScene} startIcon={<RestartAltIcon />}>Reset Camera</ArticlesButton>
+                </Box>
+            </CardContent>
+        </Card>
+    );
 }

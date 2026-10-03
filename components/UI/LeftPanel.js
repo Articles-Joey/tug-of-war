@@ -1,121 +1,56 @@
-import { useGameStore } from "@/hooks/useGameStore";
-import ArticlesButton from "@/components/UI/Button";
+"use client";
 
+import { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import Box from "@mui/material/Box";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import GameMenuPrimaryButtonGroup from "@articles-media/articles-dev-box/GameMenuPrimaryButtonGroup";
+import ArticlesButton from "./Button";
+import DebugPanel from "./DebugPanel";
+import { useStore } from "@/hooks/useStore";
 import { useSocketStore } from "@/hooks/useSocketStore";
 
-import GameMenuPrimaryButtonGroup from '@articles-media/articles-dev-box/GameMenuPrimaryButtonGroup';
-import { useStore } from "@/hooks/useStore";
-import DebugPanel from "./DebugPanel";
-import { useRouter } from "next/navigation";
-
-export default function LeftPanelContent(props) {
-
-    const {
-        server,
-        controllerState,
-    } = props;
-
-    const touchControls = useGameStore(state => state.touchControls)
-    const setTouchControls = useGameStore(state => state.setTouchControls)
-
-    const {
-        socket,
-    } = useSocketStore(state => ({
-        socket: state.socket,
-    }));
+export default function LeftPanelContent({ server: suppliedServer, controllerState } = {}) {
+    const searchParams = useSearchParams();
+    const server = suppliedServer ?? searchParams.get("server");
+    const socket = useSocketStore((state) => state.socket);
+    const [showControllerState, setShowControllerState] = useState(false);
 
     return (
-        <div className='mobile-menu-container w-100'>
-
-            <div className="card card-articles card-sm">
-
-                <div className="card-body">
-
-                    <div className="d-flex flex-wrap mb-2">
-                        <GameMenuPrimaryButtonGroup 
-                            useStore={useStore}
-                            type="GameMenu"
-                            useRouter={useRouter}
-                        />
-                    </div>
-
-                    {server !== "single-player" &&
-                        <div className='flex-header'>
-                            <div>Server: {server}</div>
-                            <div>Players: {0}/4</div>
-                        </div>
-                    }
-
-                    {(
-                        server !== "single-player"
-                        &&
-                        !socket?.connected
-                    ) &&
-                        <div
-                            className=""
-                        >
-
-                            <div className="">
-
-                                <div className="h6 mb-1">Not connected</div>
-
-                                <ArticlesButton
-                                    onClick={() => {
-                                        console.log("Reconnect")
-                                        socket.connect()
-                                    }}
-                                >
-                                    Reconnect!
-                                </ArticlesButton>
-
-                            </div>
-
-                        </div>
-                    }
-
-                </div>
-            </div>
-
+        <Box className="mobile-menu-container" sx={{ width: "100%" }}>
+            <Card sx={{ bgcolor: "game.card", backgroundImage: "none", fontSize: "0.875rem", border: "3px solid", borderColor: "game.cardBorder" }}>
+                <CardContent sx={{ p: 1, "&:last-child": { pb: 1 } }}>
+                    <Box sx={{ display: "flex", flexWrap: "wrap", mb: "0.5rem" }}>
+                        <GameMenuPrimaryButtonGroup useStore={useStore} type="GameMenu" useRouter={useRouter} />
+                    </Box>
+                    {server !== "single-player" && (
+                        <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                            <Box>Server: {server}</Box>
+                            <Box>Players: {0}/4</Box>
+                        </Box>
+                    )}
+                    {server !== "single-player" && !socket?.connected && (
+                        <Box>
+                            <Box sx={{ fontSize: "1rem", mb: "0.25rem" }}>Not connected</Box>
+                            <ArticlesButton onClick={() => socket?.connect()}>Reconnect!</ArticlesButton>
+                        </Box>
+                    )}
+                </CardContent>
+            </Card>
             <DebugPanel />
-
-            {controllerState?.connected &&
-                <div className="panel-content-group p-0 text-dark">
-
-                    <div className="p-1 border-bottom border-dark">
-                        <div className="fw-bold" style={{ fontSize: '0.7rem' }}>
-                            {controllerState?.id}
-                        </div>
-                    </div>
-
-                    <div className='p-1'>
-                        <ArticlesButton
-                            small
-                            className="w-100"
-                            active={showControllerState}
-                            onClick={() => {
-                                setShowControllerState(prev => !prev)
-                            }}
-                        >
-                            {showControllerState ? 'Hide' : 'Show'} Controller Preview
+            {controllerState?.connected && (
+                <Box className="panel-content-group" sx={{ p: 0, color: "text.primary" }}>
+                    <Box sx={{ p: "0.25rem", borderBottom: 1, borderColor: "divider" }}>
+                        <Box sx={{ fontWeight: "bold", fontSize: "0.7rem" }}>{controllerState.id}</Box>
+                    </Box>
+                    <Box sx={{ p: "0.25rem" }}>
+                        <ArticlesButton small sx={{ width: "100%" }} active={showControllerState} onClick={() => setShowControllerState((previous) => !previous)}>
+                            {showControllerState ? "Hide" : "Show"} Controller Preview
                         </ArticlesButton>
-                    </div>
-
-                    {/* {showControllerState && <div className='p-3'>
-
-                        <ControllerPreview
-                            controllerState={controllerState}
-                            showJSON={true}
-                            showVibrationControls={true}
-                            maxHeight={300}
-                            showPreview={true}
-                        />
-                    </div>} */}
-
-                </div>
-            }
-
-        </div>
-    )
-
+                    </Box>
+                </Box>
+            )}
+        </Box>
+    );
 }
-

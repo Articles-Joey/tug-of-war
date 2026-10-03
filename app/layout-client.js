@@ -11,8 +11,10 @@ import DarkModeHandler from "@articles-media/articles-dev-box/DarkModeHandler";
 import GlobalBody from '@articles-media/articles-dev-box/GlobalBody';
 import ToontownModeHandler from '@articles-media/articles-dev-box/ToontownModeHandler';
 import GlobalClientModals from '@articles-media/articles-dev-box/GlobalClientModals';
+import HotkeyHandler from '@articles-media/articles-dev-box/HotkeyHandler';
+import { useHotkeys } from 'react-hotkeys-hook';
 
-export default function LayoutClient({ children }) {
+export default function LayoutClient() {
 
     const darkMode = useStore((state) => state.darkMode);
 
@@ -26,6 +28,7 @@ export default function LayoutClient({ children }) {
                 useStore={useStore}
             />
             <Suspense>
+                <HotkeyHandler useStore={useStore} useHotkeys={useHotkeys} />
                 <GlobalClientModals
                     useStore={useStore}
                     useAudioStore={useAudioStore}
@@ -78,12 +81,6 @@ export default function LayoutClient({ children }) {
                     }}
                     infoModalConfig={{
                         previewImage: darkMode ? "img/game-preview.gif" : "img/game-preview.gif",
-                        appendContent: <>
-                            {/* <div className='mb-2'><b>Note:</b> You can jump over the ground obstacles with the jump actions. Roll actions can be used to avoid the flying obstacles, but they have a cooldown. The game gets faster and more obstacles appear the further you go, so good luck!</div>
-                            <div className=''>
-                                View full controls in the settings menu
-                            </div> */}
-                        </>
                     }}
                 />
             </Suspense>

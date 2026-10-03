@@ -45,7 +45,7 @@ export default function GlobalClientModals() {
                     show={showSettingsModal}
                     setShow={setShowSettingsModal}
                     useTouchControlsStore={useTouchControlsStore}
-                    store={useStore}
+                    useStore={useStore}
                     useAudioStore={useAudioStore}
                     config={{
                         tabs: {

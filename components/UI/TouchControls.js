@@ -1,8 +1,9 @@
+"use client";
 import { memo, useEffect, useState } from "react";
 
 import ArticlesButton from "@/components/UI/Button"
-import useStore from "@/hooks/useGameStore";
-import { useControlsStore, useGameStore } from "../hooks/useGameStore"
+import Box from "@mui/material/Box";
+import useControlsStore from "@/hooks/useTouchControlsStore";
 
 const arePropsEqual = (prevProps, nextProps) => {
     // Compare all props for equality
@@ -170,48 +171,31 @@ function TouchControlsBase(props) {
     }, []);
 
     return (
-        <div className={`touch-controls-area ${!touchControls && 'd-none'}`}>
+        <Box className="touch-controls-area" sx={{ display: touchControls ? "block" : "none" }}>
 
-            <div className='d-flex'>
+            <Box sx={{ display: "flex" }}>
 
-                <div>
-                    {/* <ArticlesButton
-                    onClick={() => {
-                        setTouchControls({
-                            left: true
-                        })
-                    }}
-                >
-                    Left
-                </ArticlesButton>
-                <ArticlesButton
-                    onClick={() => {
-                        setTouchControls({
-                            right: true
-                        })
-                    }}
-                >
-                    Right
-                </ArticlesButton> */}
-                    <div style={{
+                <Box>
+                    
+                    <Box sx={{
                         position: 'relative',
                         width: '100px',
                         height: '100px',
                         backgroundColor: 'black'
-                    }} id="zone_joystick"></div>
-                </div>
+                    }} id="zone_joystick"></Box>
+                </Box>
 
-                <div className='ms-2 d-none d-lg-block'>
-                    <div>Active: {nStart ? 'True' : 'False'}</div>
-                    <div>Direction: {nDirection ? nDirection : 'None'}</div>
-                    <div>Touch: {JSON.stringify(touchControls)}</div>
-                </div>
+                <Box sx={{ ml: "0.5rem", display: "none", "@media (min-width: 992px)": { display: "block" } }}>
+                    <Box>Active: {nStart ? 'True' : 'False'}</Box>
+                    <Box>Direction: {nDirection ? nDirection : 'None'}</Box>
+                    <Box>Touch: {JSON.stringify(touchControls)}</Box>
+                </Box>
 
-            </div>
+            </Box>
 
             <JumpButton />
 
-        </div>
+        </Box>
     )
 }
 

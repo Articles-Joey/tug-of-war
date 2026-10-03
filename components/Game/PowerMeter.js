@@ -1,7 +1,11 @@
 "use client"
-import { useEffect, useContext, useState, useRef, useMemo } from 'react';
+import { useEffect, useState, useMemo } from 'react';
+import Box from '@mui/material/Box';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import { useStore } from '@/hooks/useStore';
 import { useKeyboard } from '@/hooks/useKeyboard';
-// import Arrow from '../UI/Arrow';
+
 import { useGameStore } from '@/hooks/useGameStore';
 
 export default function PowerMeter() {
@@ -9,7 +13,7 @@ export default function PowerMeter() {
     const { moveRight, moveLeft } = useKeyboard()
 
     const history = useGameStore((state) => state.history);
-    const setHistory = useGameStore((state) => state.setHistory);
+    const darkMode = useStore((state) => state.darkMode);
     const addToHistory = useGameStore((state) => state.addToHistory);
 
     const [averageInterval, setAverageInterval] = useState(0);
@@ -39,117 +43,58 @@ export default function PowerMeter() {
 
         }, 1000); // Run cleanup every second
 
-        return () => clearInterval(interval); // Cleanup on component unmount
+        return () => clearInterval(interval);
     }, []);
 
     useEffect(() => {
         if (history.length > 1) {
-            // Calculate time differences between consecutive entries
             const intervals = history
                 .map((entry, index) => {
-                    if (index === 0) return null; // Skip the first item
-                    const prev = new Date(history[index - 1].date).getTime();
-                    const curr = new Date(entry.date).getTime();
-                    return curr - prev;
+                    if (index === 0) return null;
+                    const previous = new Date(history[index - 1].date).getTime();
+                    const current = new Date(entry.date).getTime();
+                    return current - previous;
                 })
-                .filter((diff) => diff !== null); // Remove null values
-
-            // Calculate average interval
-            const total = intervals.reduce((sum, diff) => sum + diff, 0);
-            const average = total / intervals.length;
-
-            setAverageInterval(average); // Store average in state
+                .filter((difference) => difference !== null);
+            const total = intervals.reduce((sum, difference) => sum + difference, 0);
+            setAverageInterval(total / intervals.length);
         } else {
-            setAverageInterval(0); // Reset if not enough data
+            setAverageInterval(0);
         }
     }, [history]);
 
-    let calculatedHeight = useMemo(() => {
-
+    const calculatedHeight = useMemo(() => {
         if (averageInterval > 0 && averageInterval < 100) {
-            return '100%'
+            return "100%";
         } else if (averageInterval > 100 && averageInterval < 200) {
-            return '80%'
+            return "80%";
         } else if (averageInterval > 150 && averageInterval < 200) {
-            return '60%'
+            return "60%";
         } else if (averageInterval > 200 && averageInterval < 250) {
-            return '40%'
+            return "40%";
         } else if (averageInterval > 250 && averageInterval < 300) {
-            return '20%'
-        } else if (averageInterval == 0) {
-            return '0%'
+            return "20%";
+        } else if (averageInterval === 0) {
+            return "0%";
         }
-
-    }, [averageInterval])
+    }, [averageInterval]);
 
     return (
-        <div className="power-meter noselect">
-
-            {/* <div className="card card-articles card-sm h-100 w-100"> */}
-
-            <img
-                className='panel-bg'
-                src="img/panel_bg.png"
-            >
-
-            </img>
-
-            <span className='power-meter-label'>Power Meter</span>
-
-            <div className="meter">
-
-                <div
-                    className="current-bar"
-                    style={{
-                        height: calculatedHeight
-                    }}
-                >
-
-                </div>
-
-                <div className="target-bar"></div>
-
-            </div>
-
-            <div className="arrows">
-                {/* <Arrow /> */}
-                <i className={`left fad ${moveLeft ? 'active' : ''} fa-2x px-1 fa-arrow-alt-square-left me-0`}></i>
-                <i className={`right fad ${moveRight ? 'active' : ''} fa-2x px-1 fa-arrow-alt-square-right me-0`}></i>
-            </div>
-
-            {/* <div className="card-header d-flex justify-content-center small">
-                    <span>Power Meter</span>
-                    <span>
-                        {history.length} - {averageInterval}
-                    </span>
-                </div> */}
-
-            {/* <div className="card-body h-100 flex-grow-1 p-0 d-flex justify-content-center align-items-center">
-
-                    <div className="meter">
-
-                        <div
-                            className="current-bar"
-                            style={{
-                                height: calculatedHeight
-                            }}
-                        >
-
-                        </div>
-
-                        <div className="target-bar"></div>
-
-                    </div>
-
-                </div> */}
-
-            {/* <div className="card-footer d-flex justify-content-center">
-                    <i className={`${moveLeft ? 'fad' : 'fas'} fa-2x px-1 fa-arrow-circle-left me-0`}></i>
-                    <i className={`${moveRight ? 'fad' : 'fas'} fa-2x px-1 fa-arrow-circle-right me-0`}></i>
-                </div> */}
-
-            {/* </div> */}
-
-        </div>
-    )
+        <Box className="power-meter" sx={{
+            position: "absolute", top: "1rem", left: "50%", transform: "translateX(-50%)",
+            maxWidth: 200, maxHeight: 300, width: "100%", height: "100%", zIndex: 1,
+            display: "flex", justifyContent: "center", alignItems: "center", flexDirection: "column", userSelect: "none",
+        }}>
+            <Box component="img" src="/img/panel_bg.png" alt="" sx={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", zIndex: -1, filter: darkMode !== false ? "brightness(0.5)" : "none" }} />
+            <Box component="span" sx={{ fontFamily: "Minnie, sans-serif", fontSize: "1.25rem" }}>Power Meter</Box>
+            <Box className="meter" sx={{ position: "relative", bgcolor: "#fff", width: 50, height: 110, border: "2px solid #000", my: "1rem" }}>
+                <Box className="current-bar" sx={{ position: "absolute", left: 0, width: "100%", bottom: 0, height: calculatedHeight, bgcolor: "green" }} />
+                <Box className="target-bar" sx={{ position: "absolute", left: 0, width: "100%", bottom: "50%", height: 5, bgcolor: "red", transform: "translateY(50%)" }} />
+            </Box>
+            <Box sx={{ display: "flex", fontSize: "1.25rem" }}>
+                <ArrowBackIcon titleAccess="Pull left" sx={{ fontSize: "2.5rem", mx: "0.25rem", color: moveLeft ? "limegreen" : "yellow", bgcolor: moveLeft ? "green" : "orangered", borderRadius: "0.25rem" }} />
+                <ArrowForwardIcon titleAccess="Pull right" sx={{ fontSize: "2.5rem", mx: "0.25rem", color: moveRight ? "limegreen" : "yellow", bgcolor: moveRight ? "green" : "orangered", borderRadius: "0.25rem" }} />
+            </Box>
+        </Box>
+    );
 }
