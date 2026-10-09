@@ -6,13 +6,22 @@ Source: https://sketchfab.com/3d-models/toontown-dog-b801481012814c4db29f7ad084e
 Title: Toontown Dog
 */
 
-import React, { useRef } from 'react'
+import React, { useMemo, useRef } from 'react'
 import { useGLTF } from '@react-three/drei'
 
 let link = '/models/toontown_dog.glb';
 
 export default function ModelToon(props) {
   const { nodes, materials } = useGLTF(link)
+
+  useMemo(() => {
+    if (materials.atlas5) {
+      materials.atlas5.transparent = false; // Disable standard WebGL blending
+      materials.atlas5.depthWrite = true; // Force writing to the depth buffer
+      materials.atlas5.alphaTest = 0.5; // Discard pixels below 50% opacity (adjust if edges look too thick/thin)
+    }
+  }, [materials]);
+
   return (
     <group {...props} dispose={null}>
       <group rotation={[-Math.PI / 2, 0, 0]} scale={2.423}>

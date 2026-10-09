@@ -14,10 +14,15 @@ import WaterPlane from "./WaterPlane";
 import { Model as ModelSoldierWoman } from "@/components/Models/Soldier";
 import { Model as ModelKingMen } from "@/components/Models/King";
 
-import CogFlunky from "../Models/Flunky";
-import ModelToon from "../Models/Toon";
+// import CogFlunky from "../Models/Flunky";
+import CogFlunky from "@/components/Models/CogFixed";
+
+// import ModelToon from "../Models/Toon";
+import ModelToon from "../Models/MostRecentToon";
+
 import { useStore } from "@/hooks/useStore";
 import ShipScene from "./ShipScene";
+import Rope from "./Rope";
 
 function GameCanvas({ landingAnimationMode = false }) {
 
@@ -27,16 +32,17 @@ function GameCanvas({ landingAnimationMode = false }) {
     return (
         <Canvas
             camera={{
-                position: [0, 20, 50],
+                position: [0, 15, 30],
                 fov: 50,
             }}
+            onCreated={({ camera }) => camera.lookAt(0, 5, 0)}
         >
 
             {showStats && <>
                 <Stats className="stats-overlay" />
             </>}
 
-            {!landingAnimationMode && <OrbitControls />}
+            {!landingAnimationMode && <OrbitControls target={[0, 5, 0]} />}
 
             <Sky
                 sunPosition={[
@@ -118,7 +124,8 @@ function People({ position, rotation }) {
                 <ModelToon
                     scale={1.5}
                     rotation={[0, degToRad(90), 0]}
-                    position={[-10, 2.25, 0]}
+                    position={[-10, 2.25, 0.2]}
+                    actionIndex={116}
                 />
                 :
                 <ModelSoldierWoman
@@ -132,7 +139,8 @@ function People({ position, rotation }) {
                 <CogFlunky
                     scale={0.01}
                     rotation={[0, degToRad(-90), 0]}
-                    position={[10, 2.25, 0]}
+                    position={[10, 2.25, 0.8]}
+                    actionIndex={40}
                 />
                 :
                 <ModelKingMen
@@ -167,35 +175,6 @@ const FlatRing = ({ args, color }) => {
         </mesh>
     );
 };
-
-function Rope({ position }) {
-
-    // const [ref, api] = useBox(() => ({
-    //     mass: 0,
-    //     type: 'Static',
-    //     args: [100, 0.5, 100],
-    //     position: [0, 0, 0],
-    // }))
-
-    return (
-        <group
-            position={position}
-            rotation={[0, 0, degToRad(-90)]}
-        >
-
-            <mesh
-                castShadow
-            >
-                <cylinderGeometry
-                    args={[0.05, 0.05, 20]}
-                />
-                <meshStandardMaterial color="yellow" />
-            </mesh>
-
-        </group>
-    )
-
-}
 
 function Walls() {
 

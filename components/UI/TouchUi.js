@@ -6,14 +6,18 @@ import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import useTouchControlsStore from "@/hooks/useTouchControlsStore";
 import { useGameStore } from "@/hooks/useGameStore";
 import ArticlesButton from "./Button";
+import { useStore } from "@/hooks/useStore";
 
 export default function TouchUi() {
+
     const enabled = useTouchControlsStore((state) => state.enabled);
     const addToHistory = useGameStore((state) => state.addToHistory);
+    const screenshotMode = useStore((state) => state.screenshotMode);
+
     if (!enabled) return null;
 
     return (
-        <Box className="touch-controls-wrap" sx={{ position: "absolute", bottom: 50, left: "50%", transform: "translateX(-50%)", zIndex: 1, p: "1rem", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <Box className="touch-controls-wrap" sx={{ position: "absolute", bottom: 50, left: "50%", transform: "translateX(-50%)", zIndex: 1, p: "1rem", display: "flex", justifyContent: "space-between", alignItems: "center", display: screenshotMode ? "none" : "flex" }}>
             <ArticlesButton aria-label="Pull left" sx={{ fontSize: "5rem", px: "1rem" }} onClick={() => addToHistory({ move: "Left", date: new Date() })}>
                 <ArrowBackIcon sx={{ fontSize: "inherit" }} />
             </ArticlesButton>

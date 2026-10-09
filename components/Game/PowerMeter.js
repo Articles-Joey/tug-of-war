@@ -12,8 +12,10 @@ export default function PowerMeter() {
 
     const { moveRight, moveLeft } = useKeyboard()
 
-    const history = useGameStore((state) => state.history);
     const darkMode = useStore((state) => state.darkMode);
+    const screenshotMode = useStore((state) => state.screenshotMode);
+
+    const history = useGameStore((state) => state.history);
     const addToHistory = useGameStore((state) => state.addToHistory);
 
     const [averageInterval, setAverageInterval] = useState(0);
@@ -83,7 +85,7 @@ export default function PowerMeter() {
         <Box className="power-meter" sx={{
             position: "absolute", top: "1rem", left: "50%", transform: "translateX(-50%)",
             maxWidth: 200, maxHeight: 300, width: "100%", height: "100%", zIndex: 1,
-            display: "flex", justifyContent: "center", alignItems: "center", flexDirection: "column", userSelect: "none",
+            display: "flex", justifyContent: "center", alignItems: "center", flexDirection: "column", userSelect: "none", display: screenshotMode ? "none" : "flex"
         }}>
             <Box component="img" src="/img/panel_bg.png" alt="" sx={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", zIndex: -1, filter: darkMode !== false ? "brightness(0.5)" : "none" }} />
             <Box component="span" sx={{ fontFamily: "Minnie, sans-serif", fontSize: "1.25rem" }}>Power Meter</Box>
