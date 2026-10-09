@@ -18,22 +18,65 @@ export default function DebugPanel() {
     if (!debug) return null;
 
     return (
-        <Card sx={{ bgcolor: "game.card", backgroundImage: "none", fontSize: "0.875rem", border: "3px solid", borderColor: "game.cardBorder" }}>
+        <Card
+            sx={{
+                bgcolor: "game.card",
+                backgroundImage: "none",
+                fontSize: "0.875rem",
+                border: "3px solid",
+                borderColor: "game.cardBorder",
+            }}
+        >
             <CardContent sx={{ p: 1, "&:last-child": { pb: 1 } }}>
-                <Box sx={{ fontSize: "0.875em", color: "text.secondary" }}>Debug Controls</Box>
-                <Box sx={{ fontSize: "0.875em", border: 1, borderColor: "divider", p: 1, mb: 1 }}>
-                    <ArticlesButton small variant="link" onClick={toggleToontownMode} endIcon={<RestartAltIcon />}>
+                <Box sx={{ fontSize: "0.875em", color: "text.secondary" }}>
+                    Debug Controls
+                </Box>
+                <Box
+                    sx={{
+                        fontSize: "0.875em",
+                        border: 1,
+                        borderColor: "divider",
+                        p: 1,
+                        mb: 1,
+                    }}
+                >
+                    <ArticlesButton
+                        small
+                        variant="link"
+                        onClick={toggleToontownMode}
+                        endIcon={<RestartAltIcon />}
+                    >
                         Toontown: {toontownMode ? "On" : "Off"}
                     </ArticlesButton>
                 </Box>
                 <Box sx={{ border: 1, borderColor: "divider", p: 1, mb: 1 }}>
                     {history?.map((entry, index) => (
-                        <Box key={index} sx={{ fontSize: "0.875em" }}>{entry.move} - {new Date(entry.date).toLocaleTimeString()}</Box>
+                        <Box
+                            key={index}
+                            sx={{ fontSize: "0.875em" }}
+                        >
+                            {entry.move} -{" "}
+                            {new Date(entry.date).toLocaleTimeString()}
+                        </Box>
                     ))}
                 </Box>
                 <Box sx={{ display: "flex" }}>
-                    <ArticlesButton small sx={{ width: "50%" }} onClick={reloadScene} startIcon={<RestartAltIcon />}>Reload Game</ArticlesButton>
-                    <ArticlesButton small sx={{ width: "50%" }} onClick={reloadScene} startIcon={<RestartAltIcon />}>Reset Camera</ArticlesButton>
+                    <ArticlesButton
+                        small
+                        sx={{ width: "50%" }}
+                        onClick={reloadScene}
+                        startIcon={<RestartAltIcon />}
+                    >
+                        Reload Game
+                    </ArticlesButton>
+                    <ArticlesButton
+                        small
+                        sx={{ width: "50%" }}
+                        onClick={reloadScene}
+                        startIcon={<RestartAltIcon />}
+                    >
+                        Reset Camera
+                    </ArticlesButton>
                 </Box>
             </CardContent>
         </Card>

@@ -20,7 +20,11 @@ const controls = [
     { action: "Move Right", defaultKeyboardKey: "D" },
     { action: "Drop Insect", defaultKeyboardKey: "Space" },
     { action: "Stop Powerup", defaultKeyboardKey: "ArrowDown" },
-    { emote: true, action: "Stick out Tongue", defaultKeyboardKey: "ArrowDown" },
+    {
+        emote: true,
+        action: "Stick out Tongue",
+        defaultKeyboardKey: "ArrowDown",
+    },
     { emote: true, action: "Rotate Left", defaultKeyboardKey: "ArrowLeft" },
     { emote: true, action: "Rotate Right", defaultKeyboardKey: "ArrowRight" },
 ];
@@ -37,40 +41,107 @@ export default function GameSettingsModal({ show, setShow }) {
             contentSx={{ p: 0 }}
             footerOverride={(setOpen) => (
                 <Box>
-                    <ArticlesButton variant="outline-dark" onClick={() => setOpen(false)}>Close</ArticlesButton>
-                    <ArticlesButton variant="outline-danger" sx={{ ml: "1rem" }} onClick={() => setOpen(false)}>Reset</ArticlesButton>
+                    <ArticlesButton
+                        variant="outline-dark"
+                        onClick={() => setOpen(false)}
+                    >
+                        Close
+                    </ArticlesButton>
+                    <ArticlesButton
+                        variant="outline-danger"
+                        sx={{ ml: "1rem" }}
+                        onClick={() => setOpen(false)}
+                    >
+                        Reset
+                    </ArticlesButton>
                 </Box>
             )}
         >
-            <Tabs value={tab} onChange={(_, value) => setTab(value)} aria-label="Settings sections">
-                {["Controls", "Audio", "Chat"].map((item) => <Tab key={item} value={item} label={item} />)}
+            <Tabs
+                value={tab}
+                onChange={(_, value) => setTab(value)}
+                aria-label="Settings sections"
+            >
+                {["Controls", "Audio", "Chat"].map((item) => (
+                    <Tab
+                        key={item}
+                        value={item}
+                        label={item}
+                    />
+                ))}
             </Tabs>
             <Divider />
             <Box sx={{ p: "0.5rem" }}>
-                {tab === "Controls" && controls.map((control) => (
-                    <Box key={control.action} sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: 1, borderColor: "divider", pb: "0.25rem", mb: "0.25rem" }}>
-                        <Box>
-                            <Box>{control.action}</Box>
-                            {control.emote && <Chip label="Emote" size="small" />}
+                {tab === "Controls" &&
+                    controls.map((control) => (
+                        <Box
+                            key={control.action}
+                            sx={{
+                                display: "flex",
+                                justifyContent: "space-between",
+                                alignItems: "center",
+                                borderBottom: 1,
+                                borderColor: "divider",
+                                pb: "0.25rem",
+                                mb: "0.25rem",
+                            }}
+                        >
+                            <Box>
+                                <Box>{control.action}</Box>
+                                {control.emote && (
+                                    <Chip
+                                        label="Emote"
+                                        size="small"
+                                    />
+                                )}
+                            </Box>
+                            <Box
+                                sx={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    gap: "0.25rem",
+                                }}
+                            >
+                                <Chip
+                                    label={control.defaultKeyboardKey}
+                                    size="small"
+                                />
+                                <ArticlesButton small>
+                                    Change Key
+                                </ArticlesButton>
+                            </Box>
                         </Box>
-                        <Box sx={{ display: "flex", alignItems: "center", gap: "0.25rem" }}>
-                            <Chip label={control.defaultKeyboardKey} size="small" />
-                            <ArticlesButton small>Change Key</ArticlesButton>
-                        </Box>
-                    </Box>
-                ))}
+                    ))}
                 {tab === "Audio" && (
                     <Box>
-                        <Typography id="game-volume-label">Game Volume</Typography>
-                        <Slider aria-labelledby="game-volume-label" defaultValue={50} />
-                        <Typography id="music-volume-label">Music Volume</Typography>
-                        <Slider aria-labelledby="music-volume-label" defaultValue={50} />
+                        <Typography id="game-volume-label">
+                            Game Volume
+                        </Typography>
+                        <Slider
+                            aria-labelledby="game-volume-label"
+                            defaultValue={50}
+                        />
+                        <Typography id="music-volume-label">
+                            Music Volume
+                        </Typography>
+                        <Slider
+                            aria-labelledby="music-volume-label"
+                            defaultValue={50}
+                        />
                     </Box>
                 )}
                 {tab === "Chat" && (
                     <Box sx={{ display: "flex", flexDirection: "column" }}>
-                        {["Game chat panel", "Censor chat", "Game chat speech bubbles"].map((label) => (
-                            <FormControlLabel key={label} control={<Switch />} label={label} />
+                        {[
+                            "Game chat panel",
+                            "Censor chat",
+                            "Game chat speech bubbles",
+                        ].map((label) => (
+                            <FormControlLabel
+                                key={label}
+                                control={<Switch />}
+                                label={label}
+                            />
                         ))}
                     </Box>
                 )}

@@ -9,7 +9,6 @@ import ArticlesButton from "./Button";
 import { useStore } from "@/hooks/useStore";
 
 export default function TouchUi() {
-
     const enabled = useTouchControlsStore((state) => state.enabled);
     const addToHistory = useGameStore((state) => state.addToHistory);
     const screenshotMode = useStore((state) => state.screenshotMode);
@@ -17,11 +16,35 @@ export default function TouchUi() {
     if (!enabled) return null;
 
     return (
-        <Box className="touch-controls-wrap" sx={{ position: "absolute", bottom: 50, left: "50%", transform: "translateX(-50%)", zIndex: 1, p: "1rem", display: "flex", justifyContent: "space-between", alignItems: "center", display: screenshotMode ? "none" : "flex" }}>
-            <ArticlesButton aria-label="Pull left" sx={{ fontSize: "5rem", px: "1rem" }} onClick={() => addToHistory({ move: "Left", date: new Date() })}>
+        <Box
+            className="touch-controls-wrap"
+            sx={{
+                position: "absolute",
+                bottom: 50,
+                left: "50%",
+                transform: "translateX(-50%)",
+                zIndex: 1,
+                p: "1rem",
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                display: screenshotMode ? "none" : "flex",
+            }}
+        >
+            <ArticlesButton
+                aria-label="Pull left"
+                sx={{ fontSize: "5rem", px: "1rem" }}
+                onClick={() => addToHistory({ move: "Left", date: new Date() })}
+            >
                 <ArrowBackIcon sx={{ fontSize: "inherit" }} />
             </ArticlesButton>
-            <ArticlesButton aria-label="Pull right" sx={{ fontSize: "5rem", px: "1rem" }} onClick={() => addToHistory({ move: "Right", date: new Date() })}>
+            <ArticlesButton
+                aria-label="Pull right"
+                sx={{ fontSize: "5rem", px: "1rem" }}
+                onClick={() =>
+                    addToHistory({ move: "Right", date: new Date() })
+                }
+            >
                 <ArrowForwardIcon sx={{ fontSize: "inherit" }} />
             </ArticlesButton>
         </Box>

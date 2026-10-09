@@ -8,8 +8,15 @@ export default function Rope({
     ...props
 }) {
     return (
-        <group {...props} position={position} rotation={rotation}>
-            <RopeMesh length={length} radius={radius} />
+        <group
+            {...props}
+            position={position}
+            rotation={rotation}
+        >
+            <RopeMesh
+                length={length}
+                radius={radius}
+            />
         </group>
     );
 }

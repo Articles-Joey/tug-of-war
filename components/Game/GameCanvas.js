@@ -1,7 +1,30 @@
-import { createContext, createRef, forwardRef, memo, Suspense, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import {
+    createContext,
+    createRef,
+    forwardRef,
+    memo,
+    Suspense,
+    useContext,
+    useEffect,
+    useLayoutEffect,
+    useMemo,
+    useRef,
+    useState,
+} from "react";
 
-import { Canvas, useFrame, useThree } from "@react-three/fiber"
-import { Sky, useDetectGPU, useTexture, OrbitControls, Cylinder, QuadraticBezierLine, Text, Image, Billboard, Stats } from "@react-three/drei";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
+import {
+    Sky,
+    useDetectGPU,
+    useTexture,
+    OrbitControls,
+    Cylinder,
+    QuadraticBezierLine,
+    Text,
+    Image,
+    Billboard,
+    Stats,
+} from "@react-three/drei";
 
 import { NearestFilter, RepeatWrapping, TextureLoader, Vector3 } from "three";
 
@@ -25,8 +48,7 @@ import ShipScene from "./ShipScene";
 import Rope from "./Rope";
 
 function GameCanvas({ landingAnimationMode = false }) {
-
-    const darkMode = useStore(state => state.darkMode)
+    const darkMode = useStore((state) => state.darkMode);
     const showStats = useStore((state) => state?.debugConfig?.showStats);
 
     return (
@@ -37,22 +59,17 @@ function GameCanvas({ landingAnimationMode = false }) {
             }}
             onCreated={({ camera }) => camera.lookAt(0, 5, 0)}
         >
-
-            {showStats && <>
-                <Stats className="stats-overlay" />
-            </>}
+            {showStats && (
+                <>
+                    <Stats className="stats-overlay" />
+                </>
+            )}
 
             {!landingAnimationMode && <OrbitControls target={[0, 5, 0]} />}
 
-            <Sky
-                sunPosition={[
-                    0,
-                    darkMode ? -1 : 1,
-                    0
-                ]}
-            />
+            <Sky sunPosition={[0, darkMode ? -1 : 1, 0]} />
 
-            {!darkMode ?
+            {!darkMode ? (
                 <>
                     <ambientLight intensity={2} />
                     <spotLight
@@ -62,7 +79,7 @@ function GameCanvas({ landingAnimationMode = false }) {
                         penumbra={1}
                     />
                 </>
-                :
+            ) : (
                 <>
                     <spotLight
                         intensity={5000}
@@ -72,12 +89,10 @@ function GameCanvas({ landingAnimationMode = false }) {
                         color={"white"}
                     />
                 </>
-            }
+            )}
 
             <Suspense>
-                <WaterPlane
-                    position={[0, 0, 0]}
-                />
+                <WaterPlane position={[0, 0, 0]} />
             </Suspense>
 
             <Suspense>
@@ -87,16 +102,15 @@ function GameCanvas({ landingAnimationMode = false }) {
             <Suspense>
                 <ShipScene />
             </Suspense>
-
+            
         </Canvas>
-    )
+    );
 }
 
-export default memo(GameCanvas)
+export default memo(GameCanvas);
 
 function People({ position, rotation }) {
-
-    const toontownMode = useStore(state => state.toontownMode)
+    const toontownMode = useStore((state) => state.toontownMode);
 
     const peopleRef = useRef();
     const [direction, setDirection] = useState(1); // 1 for forward, -1 for backward
@@ -119,36 +133,35 @@ function People({ position, rotation }) {
 
     return (
         <group ref={peopleRef}>
-
-            {toontownMode ?
+            {toontownMode ? (
                 <ModelToon
                     scale={1.5}
                     rotation={[0, degToRad(90), 0]}
                     position={[-10, 2.25, 0.2]}
                     actionIndex={116}
                 />
-                :
+            ) : (
                 <ModelSoldierWoman
                     scale={3}
                     rotation={[0, degToRad(90), 0]}
                     position={[-10, 2.25, 0]}
                 />
-            }
+            )}
 
-            {toontownMode ?
+            {toontownMode ? (
                 <CogFlunky
                     scale={0.01}
                     rotation={[0, degToRad(-90), 0]}
                     position={[10, 2.25, 0.8]}
                     actionIndex={40}
                 />
-                :
+            ) : (
                 <ModelKingMen
                     scale={3}
                     rotation={[0, degToRad(-90), 0]}
                     position={[10, 2.25, 0]}
                 />
-            }
+            )}
 
             {/* <ModelKingMen
                 scale={3}
@@ -156,12 +169,9 @@ function People({ position, rotation }) {
                 position={[10, 2.25, 0]}
             /> */}
 
-            <Rope
-                position={[0, 5, -0.6]}
-            />
-
+            <Rope position={[0, 5, -0.6]} />
         </group>
-    )
+    );
 }
 
 const FlatRing = ({ args, color }) => {
@@ -170,17 +180,17 @@ const FlatRing = ({ args, color }) => {
             rotation={[degToRad(-90), 0, 0]}
             position={[0, 0.28, 0]}
         >
-            <ringGeometry args={args} /> {/* Inner radius, outer radius, segments */}
-            <meshStandardMaterial color={color} /> {/* side={2} makes it visible on both sides */}
+            <ringGeometry args={args} />{" "}
+            {/* Inner radius, outer radius, segments */}
+            <meshStandardMaterial color={color} />{" "}
+            {/* side={2} makes it visible on both sides */}
         </mesh>
     );
 };
 
 function Walls() {
-
     return (
         <group>
-
             {/* Top */}
             <Wall
                 args={[20, 2, 1]}
@@ -224,14 +234,11 @@ function Walls() {
                 position={[50, 1, -40]}
                 rotation={[0, degToRad(90), 0]}
             />
-
         </group>
-    )
-
+    );
 }
 
 function Wall({ args, position, rotation }) {
-
     // const [ref, api] = useBox(() => ({
     //     mass: 0,
     //     type: 'Static',
@@ -246,6 +253,5 @@ function Wall({ args, position, rotation }) {
             {/* <BeachBall /> */}
             <meshStandardMaterial color="gray" />
         </mesh>
-    )
-
+    );
 }

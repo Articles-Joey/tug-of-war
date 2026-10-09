@@ -6,48 +6,57 @@ Source: https://sketchfab.com/3d-models/toontown-dog-b801481012814c4db29f7ad084e
 Title: Toontown Dog
 */
 
-import React, { useMemo, useRef } from 'react'
-import { useGLTF } from '@react-three/drei'
+import React, { useMemo, useRef } from "react";
+import { useGLTF } from "@react-three/drei";
 
-let link = '/models/toontown_dog.glb';
+let link = "/models/toontown_dog.glb";
 
 export default function ModelToon(props) {
-  const { nodes, materials } = useGLTF(link)
+    const { nodes, materials } = useGLTF(link);
 
-  useMemo(() => {
-    if (materials.atlas5) {
-      materials.atlas5.transparent = false; // Disable standard WebGL blending
-      materials.atlas5.depthWrite = true; // Force writing to the depth buffer
-      materials.atlas5.alphaTest = 0.5; // Discard pixels below 50% opacity (adjust if edges look too thick/thin)
-    }
-  }, [materials]);
+    useMemo(() => {
+        if (materials.atlas5) {
+            materials.atlas5.transparent = false; // Disable standard WebGL blending
+            materials.atlas5.depthWrite = true; // Force writing to the depth buffer
+            materials.atlas5.alphaTest = 0.5; // Discard pixels below 50% opacity (adjust if edges look too thick/thin)
+        }
+    }, [materials]);
 
-  return (
-    <group {...props} dispose={null}>
-      <group rotation={[-Math.PI / 2, 0, 0]} scale={2.423}>
-        <group rotation={[Math.PI / 2, 0, 0]} scale={0.01}>
-          <group scale={0.25}>
-            <primitive object={nodes._rootJoint} />
-            <skinnedMesh
-              geometry={nodes.Object_198.geometry}
-              material={materials.atlas5}
-              skeleton={nodes.Object_198.skeleton}
-            />
-            <skinnedMesh
-              geometry={nodes.Object_200.geometry}
-              material={materials.atlas5}
-              skeleton={nodes.Object_200.skeleton}
-            />
-            <skinnedMesh
-              geometry={nodes.Object_202.geometry}
-              material={materials.atlas5}
-              skeleton={nodes.Object_202.skeleton}
-            />
-          </group>
+    return (
+        <group
+            {...props}
+            dispose={null}
+        >
+            <group
+                rotation={[-Math.PI / 2, 0, 0]}
+                scale={2.423}
+            >
+                <group
+                    rotation={[Math.PI / 2, 0, 0]}
+                    scale={0.01}
+                >
+                    <group scale={0.25}>
+                        <primitive object={nodes._rootJoint} />
+                        <skinnedMesh
+                            geometry={nodes.Object_198.geometry}
+                            material={materials.atlas5}
+                            skeleton={nodes.Object_198.skeleton}
+                        />
+                        <skinnedMesh
+                            geometry={nodes.Object_200.geometry}
+                            material={materials.atlas5}
+                            skeleton={nodes.Object_200.skeleton}
+                        />
+                        <skinnedMesh
+                            geometry={nodes.Object_202.geometry}
+                            material={materials.atlas5}
+                            skeleton={nodes.Object_202.skeleton}
+                        />
+                    </group>
+                </group>
+            </group>
         </group>
-      </group>
-    </group>
-  )
+    );
 }
 
-useGLTF.preload(link)
+useGLTF.preload(link);

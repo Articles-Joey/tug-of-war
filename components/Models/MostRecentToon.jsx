@@ -25,9 +25,7 @@ export default function ModelMostRecentToon({
     const group = React.useRef();
     const prevActionRef = React.useRef();
 
-    const { scene, animations } = useGLTF(
-        "models/MostRecent-transformed.glb",
-    );
+    const { scene, animations } = useGLTF("models/MostRecent-transformed.glb");
     const clone = useMemo(() => SkeletonUtils.clone(scene), [scene]);
     const { nodes, materials } = useGraph(clone);
 

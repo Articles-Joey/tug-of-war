@@ -13,16 +13,10 @@ import * as THREE from "three";
 const FRAME_DURATION = 1 / 30;
 const FADE_DURATION = 0.2;
 
-export default function ModelCogFixed({
-    action,
-    actionIndex,
-    ...props
-}) {
+export default function ModelCogFixed({ action, actionIndex, ...props }) {
     const group = React.useRef();
     const prevActionRef = React.useRef();
-    const { scene, animations } = useGLTF(
-        "models/CogFixed-transformed.glb",
-    );
+    const { scene, animations } = useGLTF("models/CogFixed-transformed.glb");
     const clone = React.useMemo(() => SkeletonUtils.clone(scene), [scene]);
     const { nodes, materials } = useGraph(clone);
     const trimmedAnimations = React.useMemo(() => {
@@ -48,7 +42,9 @@ export default function ModelCogFixed({
     const selectedAction =
         (Number.isInteger(actionIndex)
             ? trimmedAnimations[actionIndex]?.name
-            : undefined) || action || trimmedAnimations[31]?.name;
+            : undefined) ||
+        action ||
+        trimmedAnimations[31]?.name;
 
     useEffect(() => {
         if (!actions || !selectedAction) return;

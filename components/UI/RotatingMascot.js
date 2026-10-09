@@ -11,17 +11,16 @@ import Pier from "../Models/Pier";
 import { Suspense } from "react";
 
 export default function RotatingMascot() {
-
-    const toontownMode = useStore(state => state.toontownMode)
+    const toontownMode = useStore((state) => state.toontownMode);
 
     return (
-        <Box className="rotating-mascot-container" sx={{ width: "100%", height: "100%" }}>
+        <Box
+            className="rotating-mascot-container"
+            sx={{ width: "100%", height: "100%" }}
+        >
             <Canvas shadows>
-
                 <group position={[0, 0, 0]}>
-
                     <Suspense>
-                        
                         <OrbitControls
                             autoRotate
                             enableZoom={false}
@@ -29,7 +28,7 @@ export default function RotatingMascot() {
                             enableRotate={false}
                             autoRotateSpeed={10}
                         />
-    
+
                         {/* <ambientLight intensity={2} /> */}
                         <directionalLight
                             castShadow
@@ -45,23 +44,22 @@ export default function RotatingMascot() {
                             shadow-mapSize-width={1024}
                             shadow-mapSize-height={1024}
                         />
-
                     </Suspense>
 
-                    {toontownMode ?
+                    {toontownMode ? (
                         <>
                             {/* <ModelDonaldsBoat 
                                 position={[0, -1.5, 0]}
                             /> */}
                         </>
-                        :
+                    ) : (
                         <>
                             {/* <ModelKennyNLPirateShipDark
                                 scale={0.7}
                                 position={[0, -2, 0]}
                             /> */}
                         </>
-                    }
+                    )}
 
                     <Suspense>
                         <Pier
@@ -69,9 +67,7 @@ export default function RotatingMascot() {
                             flipTexture={true}
                         />
                     </Suspense>
-
                 </group>
-
             </Canvas>
         </Box>
     );

@@ -4,11 +4,11 @@ import { degToRad } from "three/src/math/MathUtils";
 function FishBucket({ position }) {
     return (
         <group position={position}>
-            <Billboard 
-            // lockX={true} 
-            // lockY={false} 
-            // lockZ={true}
-            follow={true}
+            <Billboard
+                // lockX={true}
+                // lockY={false}
+                // lockZ={true}
+                follow={true}
             >
                 <Image
                     url="/img/fish-bucket.png"
@@ -26,7 +26,7 @@ function FishBucket({ position }) {
                 /> */}
             </Billboard>
         </group>
-    )
+    );
 }
 
 export default FishBucket;
