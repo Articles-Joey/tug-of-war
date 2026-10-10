@@ -15,9 +15,7 @@ import { useStore } from "@/hooks/useStore";
 export function ModelDonaldsBoat(props) {
     const darkMode = useStore((state) => state.darkMode);
 
-    const { nodes, materials } = useGLTF(
-        "models/DonaldsBoat-transformed.glb",
-    );
+    const { nodes, materials } = useGLTF("models/DonaldsBoat-transformed.glb");
     // Helper to darken material if darkMode
     function getMaterial(mat) {
         if (!darkMode) return mat;

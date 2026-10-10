@@ -17,7 +17,7 @@ import { useStore } from "@/hooks/useStore";
 export function ModelDonaldDuck(props) {
     const darkMode = useStore((state) => state.darkMode);
 
-    const { scene } = useGLTF("models/toontown/DonaldDuck-transformed.glb");
+    const { scene } = useGLTF("models/DonaldDuck-transformed.glb");
     const clone = React.useMemo(() => SkeletonUtils.clone(scene), [scene]);
     const { nodes, materials } = useGraph(clone);
 
@@ -34,7 +34,7 @@ export function ModelDonaldDuck(props) {
         <group
             {...props}
             dispose={null}
-            scale={200}
+            scale={props.scale || 200}
         >
             <primitive object={nodes._rootJoint} />
             <skinnedMesh

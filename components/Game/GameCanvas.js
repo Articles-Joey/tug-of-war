@@ -1,51 +1,10 @@
-import {
-    createContext,
-    createRef,
-    forwardRef,
-    memo,
-    Suspense,
-    useContext,
-    useEffect,
-    useLayoutEffect,
-    useMemo,
-    useRef,
-    useState,
-} from "react";
-
-import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import {
-    Sky,
-    useDetectGPU,
-    useTexture,
-    OrbitControls,
-    Cylinder,
-    QuadraticBezierLine,
-    Text,
-    Image,
-    Billboard,
-    Stats,
-} from "@react-three/drei";
-
-import { NearestFilter, RepeatWrapping, TextureLoader, Vector3 } from "three";
-
-import { Physics, useBox, useSphere } from "@react-three/cannon";
-import { degToRad } from "three/src/math/MathUtils";
-
-import { ModelKennyNLGraveyardRocksTall } from "@/components/Models/rocks-tall";
-import WaterPlane from "./WaterPlane";
-
-import { Model as ModelSoldierWoman } from "@/components/Models/Soldier";
-import { Model as ModelKingMen } from "@/components/Models/King";
-
-// import CogFlunky from "../Models/Flunky";
-import CogFlunky from "@/components/Models/CogFixed";
-
-// import ModelToon from "../Models/Toon";
-import ModelToon from "../Models/MostRecentToon";
-
+import { memo, Suspense } from "react";
+import { Canvas } from "@react-three/fiber";
+import { Sky, OrbitControls, Stats } from "@react-three/drei";
 import { useStore } from "@/hooks/useStore";
+import WaterPlane from "./WaterPlane";
 import ShipScene from "./ShipScene";
-import Rope from "./Rope";
+import People from "./People";
 
 function GameCanvas({ landingAnimationMode = false }) {
     const darkMode = useStore((state) => state.darkMode);
@@ -81,10 +40,11 @@ function GameCanvas({ landingAnimationMode = false }) {
                 </>
             ) : (
                 <>
+                    <ambientLight intensity={0.25} />
                     <spotLight
-                        intensity={5000}
-                        position={[-50, 90, 0]}
-                        angle={5}
+                        intensity={2000}
+                        position={[0, 40, -10]}
+                        angle={-10}
                         penumbra={1}
                         color={"white"}
                     />
@@ -96,162 +56,14 @@ function GameCanvas({ landingAnimationMode = false }) {
             </Suspense>
 
             <Suspense>
-                <People />
+                <People landingAnimationMode={landingAnimationMode} />
             </Suspense>
 
             <Suspense>
                 <ShipScene />
             </Suspense>
-            
         </Canvas>
     );
 }
 
 export default memo(GameCanvas);
-
-function People({ position, rotation }) {
-    const toontownMode = useStore((state) => state.toontownMode);
-
-    const peopleRef = useRef();
-    const [direction, setDirection] = useState(1); // 1 for forward, -1 for backward
-    const speed = 0.05; // Adjust speed as needed
-    const bounds = 5;
-
-    useFrame(() => {
-        if (peopleRef.current) {
-            // Get the current position of the group
-            const currentX = peopleRef.current.position.x;
-
-            // Check if it needs to change direction
-            if (currentX >= bounds) setDirection(-1);
-            else if (currentX <= -bounds) setDirection(1);
-
-            // Update position
-            peopleRef.current.position.x += speed * direction;
-        }
-    });
-
-    return (
-        <group ref={peopleRef}>
-            {toontownMode ? (
-                <ModelToon
-                    scale={1.5}
-                    rotation={[0, degToRad(90), 0]}
-                    position={[-10, 2.25, 0.2]}
-                    actionIndex={116}
-                />
-            ) : (
-                <ModelSoldierWoman
-                    scale={3}
-                    rotation={[0, degToRad(90), 0]}
-                    position={[-10, 2.25, 0]}
-                />
-            )}
-
-            {toontownMode ? (
-                <CogFlunky
-                    scale={0.01}
-                    rotation={[0, degToRad(-90), 0]}
-                    position={[10, 2.25, 0.8]}
-                    actionIndex={40}
-                />
-            ) : (
-                <ModelKingMen
-                    scale={3}
-                    rotation={[0, degToRad(-90), 0]}
-                    position={[10, 2.25, 0]}
-                />
-            )}
-
-            {/* <ModelKingMen
-                scale={3}
-                rotation={[0, degToRad(-90), 0]}
-                position={[10, 2.25, 0]}
-            /> */}
-
-            <Rope position={[0, 5, -0.6]} />
-        </group>
-    );
-}
-
-const FlatRing = ({ args, color }) => {
-    return (
-        <mesh
-            rotation={[degToRad(-90), 0, 0]}
-            position={[0, 0.28, 0]}
-        >
-            <ringGeometry args={args} />{" "}
-            {/* Inner radius, outer radius, segments */}
-            <meshStandardMaterial color={color} />{" "}
-            {/* side={2} makes it visible on both sides */}
-        </mesh>
-    );
-};
-
-function Walls() {
-    return (
-        <group>
-            {/* Top */}
-            <Wall
-                args={[20, 2, 1]}
-                position={[-40, 1, -50]}
-            />
-            <Wall
-                args={[20, 2, 1]}
-                position={[40, 1, -50]}
-            />
-
-            {/* Bottom */}
-            <Wall
-                args={[20, 2, 1]}
-                position={[-40, 1, 50]}
-            />
-            <Wall
-                args={[20, 2, 1]}
-                position={[40, 1, 50]}
-            />
-
-            {/* Left */}
-            <Wall
-                args={[20, 2, 1]}
-                position={[-50, 1, 40]}
-                rotation={[0, degToRad(90), 0]}
-            />
-            <Wall
-                args={[20, 2, 1]}
-                position={[-50, 1, -40]}
-                rotation={[0, degToRad(90), 0]}
-            />
-
-            {/* Right */}
-            <Wall
-                args={[20, 2, 1]}
-                position={[50, 1, 40]}
-                rotation={[0, degToRad(90), 0]}
-            />
-            <Wall
-                args={[20, 2, 1]}
-                position={[50, 1, -40]}
-                rotation={[0, degToRad(90), 0]}
-            />
-        </group>
-    );
-}
-
-function Wall({ args, position, rotation }) {
-    // const [ref, api] = useBox(() => ({
-    //     mass: 0,
-    //     type: 'Static',
-    //     args: args,
-    //     position: position,
-    //     rotation: rotation
-    // }))
-
-    return (
-        <mesh castShadow>
-            <boxGeometry args={args} />
-            {/* <BeachBall /> */}
-            <meshStandardMaterial color="gray" />
-        </mesh>
-    );
-}

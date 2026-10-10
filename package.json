@@ -21,7 +21,6 @@
         "@mui/icons-material": "^9.4.0",
         "@mui/material": "^9.4.0",
         "@mui/material-nextjs": "^9.4.0",
-        "@react-three/cannon": "^6.6.0",
         "@react-three/csg": "^4.0.0",
         "@react-three/drei": "^10.7.7",
         "@react-three/fiber": "^9.8.1",

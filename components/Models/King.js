@@ -12,25 +12,28 @@ import skinColor from "./skinColor";
 
 const link = `${process.env.NEXT_PUBLIC_CDN}games/Assets/Quaternius/men/King-transformed.glb`;
 
-export function Model(props) {
+export function Model({ previewConfig, action, actionIndex, ...props }) {
     const group = React.useRef();
     const { scene, animations } = useGLTF(link);
     const clone = React.useMemo(() => SkeletonUtils.clone(scene), [scene]);
     const { nodes, materials } = useGraph(clone);
     const { actions } = useAnimations(animations, group);
 
-    const { previewConfig, action } = props;
+    const selectedAction =
+        (Number.isInteger(actionIndex)
+            ? animations[actionIndex]?.name
+            : undefined) ||
+        action ||
+        "Idle";
 
     useEffect(() => {
-        if (!actions) return;
+        const nextAction = actions[selectedAction] || actions["Idle"];
+        if (!nextAction) return;
 
-        const target = action || "Idle";
-        const clip = actions[target];
-        if (!clip || clip.isRunning()) return;
-
-        Object.values(actions).forEach((a) => a?.stop());
-        clip.play();
-    }, [actions, action]);
+        Object.values(actions).forEach((clip) => clip?.stop());
+        nextAction.reset().fadeIn(0.2).play();
+        return () => nextAction.fadeOut(0.2);
+    }, [actions, selectedAction]);
 
     return (
         <group

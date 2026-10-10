@@ -14,6 +14,7 @@ export default function DebugPanel() {
     const toggleToontownMode = useStore((state) => state.toggleToontownMode);
     const reloadScene = useStore((state) => state.reloadScene);
     const history = useGameStore((state) => state.history);
+    const forceWin = useGameStore((state) => state.forceWin);
 
     if (!debug) return null;
 
@@ -47,6 +48,30 @@ export default function DebugPanel() {
                         endIcon={<RestartAltIcon />}
                     >
                         Toontown: {toontownMode ? "On" : "Off"}
+                    </ArticlesButton>
+                </Box>
+                <Box
+                    sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: 1,
+                        border: 1,
+                        borderColor: "divider",
+                        p: 1,
+                        mb: 1,
+                    }}
+                >
+                    <ArticlesButton
+                        small
+                        onClick={() => forceWin("Player")}
+                    >
+                        Force Player Win
+                    </ArticlesButton>
+                    <ArticlesButton
+                        small
+                        onClick={() => forceWin("Computer")}
+                    >
+                        Force Computer Win
                     </ArticlesButton>
                 </Box>
                 <Box sx={{ border: 1, borderColor: "divider", p: 1, mb: 1 }}>

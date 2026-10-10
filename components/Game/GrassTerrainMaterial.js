@@ -74,7 +74,10 @@ export default function GrassTerrainMaterial({
                     "#include <begin_vertex>\nvTerrainPosition = position;\nvRiverBankDistance = riverBankDistance;",
                 );
             shader.fragmentShader = shader.fragmentShader
-                .replace("#include <common>", `#include <common>\n${SAND_SHADER}`)
+                .replace(
+                    "#include <common>",
+                    `#include <common>\n${SAND_SHADER}`,
+                )
                 .replace("#include <map_fragment>", SAND_BLEND);
         };
         terrainMaterial.customProgramCacheKey = () => "grass-terrain-sand-v2";
@@ -83,5 +86,10 @@ export default function GrassTerrainMaterial({
 
     useEffect(() => () => material.dispose(), [material]);
 
-    return <primitive object={material} attach="material" />;
+    return (
+        <primitive
+            object={material}
+            attach="material"
+        />
+    );
 }

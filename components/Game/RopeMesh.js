@@ -1,5 +1,6 @@
-import { useEffect, useMemo } from "react";
-import { CylinderGeometry } from "three";
+import { useEffect, useLayoutEffect, useMemo, useRef } from "react";
+import { useFrame } from "@react-three/fiber";
+import { CylinderGeometry, Vector3 } from "three";
 import RopeMaterial from "./RopeMaterial";
 
 const STRAND_COUNT = 3;
@@ -8,7 +9,7 @@ const TWIST_PITCH_IN_RADII = 6;
 const RADIAL_SEGMENTS = 48;
 const SEGMENTS_PER_TURN = 24;
 
-export default function RopeMesh({ length, radius, position }) {
+export default function RopeMesh({ length, radius, position, curve = null }) {
     const geometry = useMemo(() => {
         const pitch = radius * TWIST_PITCH_IN_RADII;
         const heightSegments = Math.max(
@@ -51,6 +52,65 @@ export default function RopeMesh({ length, radius, position }) {
         meshGeometry.computeVertexNormals();
         return meshGeometry;
     }, [length, radius]);
+
+    // Keep the original twisted surface and UVs while bending its centerline.
+    const restPositions = useMemo(
+        () => geometry.attributes.position.array.slice(),
+        [geometry],
+    );
+    const heightSegments = geometry.parameters.heightSegments;
+    const centers = useMemo(
+        () => Array.from({ length: heightSegments + 1 }, () => new Vector3()),
+        [heightSegments],
+    );
+    const lastCurveVersion = useRef(-1);
+
+    useLayoutEffect(() => {
+        lastCurveVersion.current = -1;
+        // Removing a curve restores the original straight rope.
+        if (!curve) {
+            geometry.attributes.position.array.set(restPositions);
+            geometry.attributes.position.needsUpdate = true;
+            geometry.computeVertexNormals();
+            geometry.computeBoundingSphere();
+        }
+    }, [curve, geometry, restPositions]);
+
+    useFrame(() => {
+        if (!curve || lastCurveVersion.current === curve.version) return;
+        const frames = curve.computeFrenetFrames(heightSegments, false);
+        for (let ring = 0; ring <= heightSegments; ring++) {
+            curve.getPoint(ring / heightSegments, centers[ring]);
+        }
+
+        const vertices = geometry.attributes.position;
+        for (let i = 0; i < vertices.count; i++) {
+            const offset = i * 3;
+            const x = restPositions[offset];
+            const y = restPositions[offset + 1];
+            const z = restPositions[offset + 2];
+            const ring = Math.max(
+                0,
+                Math.min(
+                    heightSegments,
+                    Math.round((y / length + 0.5) * heightSegments),
+                ),
+            );
+            const center = centers[ring];
+            const normal = frames.normals[ring];
+            const binormal = frames.binormals[ring];
+            vertices.setXYZ(
+                i,
+                center.x + normal.x * x + binormal.x * z,
+                center.y + normal.y * x + binormal.y * z,
+                center.z + normal.z * x + binormal.z * z,
+            );
+        }
+        vertices.needsUpdate = true;
+        geometry.computeVertexNormals();
+        geometry.computeBoundingSphere();
+        lastCurveVersion.current = curve.version;
+    });
 
     useEffect(() => () => geometry.dispose(), [geometry]);
 

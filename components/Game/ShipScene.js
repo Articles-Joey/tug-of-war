@@ -12,15 +12,14 @@ import FishBucket from "../Models/FishBucket";
 import { ModelKennyNLGraveyardRocksTall } from "@/components/Models/rocks-tall";
 import { useStore } from "@/hooks/useStore";
 import { ModelDonaldsBoat } from "../Models/DonaldsBoat";
+import { ModelDonaldDuck } from "../Models/DonaldDuck";
 
 export default function ShipScene() {
-
     const toontownMode = useStore((state) => state.toontownMode);
     const TreeModel = toontownMode ? ToontownTree : Tree;
 
     return (
         <group>
-            
             {[-40, -20, 0, 20, 40].map((x) => (
                 <TreeModel
                     key={x}
@@ -39,23 +38,28 @@ export default function ShipScene() {
                 rotation={[0, degToRad(-45), 0]}
             />
 
-            {toontownMode ?
-                <ModelDonaldsBoat
-                    position={[40, 2, 0]}
-                    rotation={[0, degToRad(45), 0]}
-                    scale={100}
-                />
-                :
+            {toontownMode ? (
+                <>
+                    <ModelDonaldsBoat
+                        position={[40, 2, 0]}
+                        rotation={[0, degToRad(45), 0]}
+                        scale={100}
+                    />
+                    <ModelDonaldDuck
+                        position={[35, 5.95, -7]}
+                        rotation={[0, degToRad(-45), 0]}
+                        scale={400}
+                    />
+                </>
+            ) : (
                 <ModelKennyNLPirateShipWreck
                     position={[0, -5, 30]}
                     rotation={[0, degToRad(45), 0]}
                     scale={5}
                 />
-            }
+            )}
 
-            <GrassTerrain 
-                position={[0, 0.9, 0]}
-            />
+            <GrassTerrain position={[0, 0.9, 0]} />
 
             <Rocks />
 

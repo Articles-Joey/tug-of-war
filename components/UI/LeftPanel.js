@@ -10,6 +10,7 @@ import ArticlesButton from "./Button";
 import DebugPanel from "./DebugPanel";
 import { useStore } from "@/hooks/useStore";
 import { useSocketStore } from "@/hooks/useSocketStore";
+import { useGameStore } from "@/hooks/useGameStore";
 
 export default function LeftPanelContent({
     server: suppliedServer,
@@ -19,6 +20,9 @@ export default function LeftPanelContent({
     const server = suppliedServer ?? searchParams.get("server");
     const socket = useSocketStore((state) => state.socket);
     const [showControllerState, setShowControllerState] = useState(false);
+    const gameStatus = useGameStore((state) => state.gameStatus);
+    const startGame = useGameStore((state) => state.startGame);
+    const resetGame = useGameStore((state) => state.resetGame);
 
     return (
         <Box
@@ -56,16 +60,29 @@ export default function LeftPanelContent({
                             <Box>Players: {0}/4</Box>
                         </Box>
                     )}
+                    <Box sx={{ mt: 1, mb: 0.5 }}>Status: {gameStatus}</Box>
                     {server !== "single-player" && !socket?.connected && (
-                        <Box>
-                            <Box sx={{ fontSize: "1rem", mb: "0.25rem" }}>
-                                Not connected
-                            </Box>
+                        <Box sx={{ fontSize: "1rem", mb: "0.25rem" }}>
+                            Not connected
+                        </Box>
+                    )}
+                    <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
+                        {server !== "single-player" && !socket?.connected && (
                             <ArticlesButton onClick={() => socket?.connect()}>
                                 Reconnect!
                             </ArticlesButton>
-                        </Box>
-                    )}
+                        )}
+                        {gameStatus === "In Lobby" && (
+                            <ArticlesButton onClick={() => startGame()}>
+                                Start Game
+                            </ArticlesButton>
+                        )}
+                        {gameStatus === "Game Over" && (
+                            <ArticlesButton onClick={resetGame}>
+                                Restart Game
+                            </ArticlesButton>
+                        )}
+                    </Box>
                 </CardContent>
             </Card>
             <DebugPanel />

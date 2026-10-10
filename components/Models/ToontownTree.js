@@ -26,7 +26,10 @@ export default function ToontownTree({ height = 20, ...props }) {
     });
 
     return (
-        <group ref={groupRef} {...props}>
+        <group
+            ref={groupRef}
+            {...props}
+        >
             <group ref={billboardRef}>
                 <mesh position={[0, height / 2, 0]}>
                     <planeGeometry args={[width, height]} />

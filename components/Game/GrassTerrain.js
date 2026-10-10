@@ -59,11 +59,11 @@ export default function GrassTerrain({
             const z = vertices.getZ(i);
             const side = z < 0 ? -1 : 1;
             // Layer different wavelengths, with independent shapes on each bank.
-            const shorelineOffset = variation * (
-                0.6 * Math.sin(x * 0.11 + side * 1.7) +
-                0.28 * Math.sin(x * 0.29 - side * 2.3) +
-                0.12 * Math.sin(x * 0.67 + side * 0.8)
-            );
+            const shorelineOffset =
+                variation *
+                (0.6 * Math.sin(x * 0.11 + side * 1.7) +
+                    0.28 * Math.sin(x * 0.29 - side * 2.3) +
+                    0.12 * Math.sin(x * 0.67 + side * 0.8));
             const distance = Math.abs(z) - shorelineOffset;
             bankDistances[i] = distance;
             const t = Math.min(
@@ -73,10 +73,11 @@ export default function GrassTerrain({
             const bankHeight = t * t * (3 - 2 * t);
             // Fade bumps out at the flat ground and riverbed boundaries.
             const bankInfluence = 4 * t * (1 - t);
-            const bumps = bankBumpHeight * bankInfluence * (
-                0.6 * Math.sin(x * 0.43 + z * 0.37) +
-                0.4 * Math.sin(x * 0.71 - z * 0.61)
-            );
+            const bumps =
+                bankBumpHeight *
+                bankInfluence *
+                (0.6 * Math.sin(x * 0.43 + z * 0.37) +
+                    0.4 * Math.sin(x * 0.71 - z * 0.61));
             vertices.setY(
                 i,
                 -riverDepth + (groundHeight + riverDepth) * bankHeight + bumps,
@@ -84,7 +85,10 @@ export default function GrassTerrain({
         }
 
         // Share the shoreline shape with the sand shader so both stay aligned.
-        terrain.setAttribute("riverBankDistance", new BufferAttribute(bankDistances, 1));
+        terrain.setAttribute(
+            "riverBankDistance",
+            new BufferAttribute(bankDistances, 1),
+        );
         vertices.needsUpdate = true;
         terrain.computeVertexNormals();
         terrain.computeBoundingBox();
@@ -107,7 +111,11 @@ export default function GrassTerrain({
     useEffect(() => () => texture.dispose(), [texture]);
 
     return (
-        <mesh {...props} geometry={geometry} receiveShadow>
+        <mesh
+            {...props}
+            geometry={geometry}
+            receiveShadow
+        >
             <GrassTerrainMaterial
                 map={texture}
                 riverHalfWidth={riverHalfWidth}

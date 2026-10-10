@@ -7,6 +7,8 @@ import useFullscreen from "@articles-media/articles-dev-box/useFullscreen";
 import GameMenu from "@articles-media/articles-dev-box/GameMenu";
 import LeftPanelContent from "@/components/UI/LeftPanel";
 import PowerMeter from "@/components/Game/PowerMeter";
+import GameStatus from "@/components/Game/GameStatus";
+import { useGameLoop } from "@/hooks/useGameLoop";
 import TouchUi from "@/components/UI/TouchUi";
 import { useStore } from "@/hooks/useStore";
 import useTouchControlsStore from "@/hooks/useTouchControlsStore";
@@ -16,6 +18,7 @@ const GameCanvas = dynamic(() => import("@/components/Game/GameCanvas"), {
 });
 
 export default function TugOfWarGamePage() {
+    useGameLoop();
     const sidebar = useStore((state) => state.sidebar);
     const sceneKey = useStore((state) => state.sceneKey);
     const showMenu = useStore((state) => state.showMenu);
@@ -93,6 +96,7 @@ export default function TugOfWarGamePage() {
                 }}
             >
                 <PowerMeter />
+                <GameStatus />
                 {enabled && <TouchUi />}
                 <GameCanvas key={sceneKey} />
             </Box>

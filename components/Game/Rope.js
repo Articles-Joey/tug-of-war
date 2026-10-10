@@ -5,6 +5,7 @@ export default function Rope({
     rotation = [0, 0, -Math.PI / 2],
     length = 20,
     radius = 0.15,
+    curve = null,
     ...props
 }) {
     return (
@@ -16,6 +17,7 @@ export default function Rope({
             <RopeMesh
                 length={length}
                 radius={radius}
+                curve={curve}
             />
         </group>
     );
